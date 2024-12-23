@@ -33,21 +33,23 @@ fun TopCampusAppBar(topBarTitle: String, onBackClick: () -> Unit) {
             )
         },
         navigationIcon = {
-            IconButton(
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = Color(0xFFFFDEA1),
-                    contentColor = Color(0xFF261900)
-                ),
-                modifier = Modifier.size(30.dp),
-                onClick = {
-                    onBackClick()
-                }) {
-                Icon(
-                    tint = Color(0xFF261900),
-                    modifier = Modifier.fillMaxSize(),
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "back click"
-                )
+            if(topBarTitle!="Admin Dashboard"){
+                IconButton(
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = Color(0xFFFFDEA1),
+                        contentColor = Color(0xFF261900)
+                    ),
+                    modifier = Modifier.size(30.dp),
+                    onClick = {
+                        onBackClick()
+                    }) {
+                    Icon(
+                        tint = Color(0xFF261900),
+                        modifier = Modifier.fillMaxSize(),
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "back click"
+                    )
+                }
             }
         }//navigation
         , colors = TopAppBarDefaults.centerAlignedTopAppBarColors(

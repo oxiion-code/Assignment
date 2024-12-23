@@ -1,5 +1,6 @@
 package com.oxiion.campuscart.domain.screens.adminScreens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,15 +33,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oxiion.campuscart.common.LoadingDialog
-import com.oxiion.campuscart.domain.models.AdminViewModel
-import com.oxiion.campuscart.utils.LoginStateAdminData
-
+import com.oxiion.campuscart.domain.models.AuthViewModel
+import com.oxiion.campuscart.ui_app.components.AppTextBox
+import com.oxiion.campuscart.utils.StateData
+import com.oxiion.campuscart.utils.SharedPreferencesManager
 
 
 private const val superAdminId = "123"
@@ -53,15 +56,16 @@ private fun ErrorMessage(message: String) {
     )
 }
 @Composable
-fun AdminLoginScreen(viewModel: AdminViewModel, onLoginSuccess: () -> Unit, onSignupClick: () -> Unit) {
-    var securityCode by remember { mutableStateOf("") }
-    var adminEmail by remember { mutableStateOf("") }
-    var adminPassword by remember { mutableStateOf("") }
+fun AdminLoginScreen(viewModel: AuthViewModel, onLoginSuccess: () -> Unit, onSignupClick: () -> Unit) {
+    val securityCode = remember { mutableStateOf("") }
+    val adminEmail = remember { mutableStateOf("") }
+    val adminPassword = remember { mutableStateOf("") }
     var chances by remember { mutableIntStateOf(5) }
     val isPasswordVisible = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
     val loginState by viewModel.loginState.collectAsState()
     var showErrorMessage by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -85,44 +89,14 @@ fun AdminLoginScreen(viewModel: AdminViewModel, onLoginSuccess: () -> Unit, onSi
         Spacer(modifier = Modifier
             .height(32.dp)
             .fillMaxWidth())
-        OutlinedTextField(
-            value = securityCode,
-            shape = RoundedCornerShape(10.dp),
-            onValueChange = { securityCode = it },
-            placeholder = {
-                Text(
-                    text = "Security Code",
-                    color = Color.DarkGray
-                )
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                focusedBorderColor = Color(0xFFEAC16C),
-                unfocusedBorderColor = Color(0xFFFFFFFF),
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color(0xFFF1E7D9)
-            )
+       AppTextBox(
+           text = securityCode,
+           placeholderName = "Enter security code"
+       )
+        AppTextBox(
+            text = adminEmail,
+            placeholderName = "Enter admin email"
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            value = adminEmail,
-            shape = RoundedCornerShape(10.dp),
-            onValueChange = { adminEmail = it },
-            placeholder = {
-                Text(
-                    text = "Admin Email",
-                    color = Color.DarkGray
-                )
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                focusedBorderColor = Color(0xFFEAC16C),
-                unfocusedBorderColor = Color(0xFFFFFFFF),
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color(0xFFF1E7D9)
-            )
-        )
-        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             trailingIcon = {
                 IconButton(
@@ -140,10 +114,12 @@ fun AdminLoginScreen(viewModel: AdminViewModel, onLoginSuccess: () -> Unit, onSi
                     )
                 }
             },
-            value = adminPassword,
+            singleLine = true,
+            value = adminPassword.value,
             shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.size(width = 300.dp, height = 56.dp),
             visualTransformation = if (isPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-            onValueChange = { adminPassword = it },
+            onValueChange = { adminPassword.value = it },
             placeholder = {
                 Text(
                     text = "Admin Password",
@@ -151,6 +127,7 @@ fun AdminLoginScreen(viewModel: AdminViewModel, onLoginSuccess: () -> Unit, onSi
                 )
             },
             colors = OutlinedTextFieldDefaults.colors(
+                unfocusedTextColor = Color.Gray,
                 focusedTextColor = Color.Black,
                 focusedBorderColor = Color(0xFFEAC16C),
                 unfocusedBorderColor = Color(0xFFFFFFFF),
@@ -168,12 +145,8 @@ fun AdminLoginScreen(viewModel: AdminViewModel, onLoginSuccess: () -> Unit, onSi
         Button(
             enabled = chances > 0,
             onClick = {
-                if (securityCode != superAdminId) {
-                    showErrorMessage = true
-                    chances--
-                }
-                if (chances > 0 && securityCode == superAdminId) {
-                    viewModel.login(adminEmail, adminPassword)
+                if (chances > 0 && securityCode.value == superAdminId) {
+                    viewModel.login(adminEmail.value, adminPassword.value)
                     // Authenticate admin
                 } else {
                     // Show error message
@@ -208,17 +181,23 @@ fun AdminLoginScreen(viewModel: AdminViewModel, onLoginSuccess: () -> Unit, onSi
             color = Color(0xFFD8C4A0)
         )
         when (loginState) {
-            is LoginStateAdminData.Error -> {
+            is StateData.Error -> {
+                chances--
                 isLoading.value = false
                 showErrorMessage = true
+                Toast.makeText(context, (loginState as StateData.Error).message, Toast.LENGTH_SHORT).show()
+                // Reset loginState to prevent repeated toasts
+                viewModel.resetLoginState()
             }
 
-            LoginStateAdminData.Idle -> {}
-            LoginStateAdminData.Loading -> {
+            StateData.Idle -> {}
+            StateData.Loading -> {
                 isLoading.value = true
                 LoadingDialog(isLoading)
             }
-            is LoginStateAdminData.Success -> {
+            is StateData.Success -> {
+                chances=5
+                SharedPreferencesManager.saveLogOutState(context,false)
                 showErrorMessage = false
                 isLoading.value = false
                 onLoginSuccess()

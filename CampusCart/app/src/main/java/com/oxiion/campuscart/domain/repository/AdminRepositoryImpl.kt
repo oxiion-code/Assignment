@@ -8,27 +8,26 @@ import com.oxiion.campuscart.data.models.roles.Admin
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-
 @Singleton
 class AdminRepositoryImpl @Inject constructor(
-    private val auth:FirebaseAuth,
+    private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
-):AdminRepository {
+) : AdminRepository {
     override suspend fun signIn(
-       admin: Admin,
-       password: String
+        admin: Admin,
+        password: String
     ): Result<Boolean> {
         return try {
-            auth.createUserWithEmailAndPassword(admin.email,password).await()
+            auth.createUserWithEmailAndPassword(admin.email, password).await()
             val userAdmin = auth.currentUser
             if (userAdmin != null) {
-                Log.i("abcd1234","inserted into userAdmin")
+                Log.i("abcd1234", "inserted into userAdmin")
                 firestore.collection("admins").document(userAdmin.uid).set(admin).await()
-                Log.i("abcd1234","hey try fn is okk and sucessfull")
+                Log.i("abcd1234", "hey try fn is okk and sucessfull")
             }
             Result.success(true)
         } catch (e: Exception) {
-            Log.i("firestore error",e.message.toString())
+            Log.i("firestore error", e.message.toString())
             Result.failure(e)
         }
     }
@@ -38,12 +37,30 @@ class AdminRepositoryImpl @Inject constructor(
             // Sign in with email and password
             val userAdmin = auth.signInWithEmailAndPassword(userEmail, password).await()
             val uid = userAdmin.user?.uid ?: return Result.failure(Exception("No user UID found"))
-            Result.success(uid) // Return only the UID on successful login
+
+            // Fetch the user document from Firestore
+            val userDocument = firestore.collection("admins").document(uid).get().await()
+
+            if (userDocument.exists()) {
+                val role = userDocument.getString("role")
+                if (role == "admin" || role == "super admin") {
+                    Result.success(uid) // Return UID for successful admin login
+                } else {
+                    // Logout the user and return an error
+                    auth.signOut()
+                    Result.failure(Exception("Unauthorized access: This account is not an admin"))
+                }
+            } else {
+                // Logout the user and return an error
+                auth.signOut()
+                Result.failure(Exception("No admin data found for this user"))
+            }
         } catch (e: Exception) {
             Log.e("AdminRepository", "Login failed: ${e.message}")
             Result.failure(e)
         }
     }
+
     override suspend fun fetchAdminData(uid: String): Result<Admin> {
         return try {
             // Fetch admin data from Firestore
@@ -63,37 +80,12 @@ class AdminRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
-    override suspend fun addProduct(product: Product): Result<Boolean> {
+    override suspend fun logout(): Result<Boolean> {
         return try {
-            val userAdmin =auth.currentUser
-            val uid=userAdmin?.uid?:return Result.failure(Exception("No user UID found"))
-            val adminDocRef=firestore.collection("admins").document(uid)
-            val adminSnapshot=adminDocRef.get().await()
-            if (adminSnapshot.exists()){
-                val adminData=adminSnapshot.toObject(Admin::class.java)
-                if (adminData!=null){
-                    val updatedStockItems=adminData.stockItems.toMutableList().apply {
-                        add(product)
-                    }
-                    adminDocRef.update("stockItems",updatedStockItems).await()
-                    Result.success(true)
-                }else{
-                    Result.failure(Exception("Admin data is null"))
-                }
-            }else{
-                Result.failure(Exception("Admin document not found"))
-            }
-        }catch (e:Exception){
-            Log.e("AdminRepository","Failed to add product:${e.message.toString()}")
+            auth.signOut()
+            Result.success(true)
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
-    override suspend fun logout(): Result<Boolean>{
-    return try{
-        auth.signOut()
-        Result.success(true)
-    }catch(e:Exception){
-        Result.failure(e)
-    }
-}
 }

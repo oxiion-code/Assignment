@@ -15,7 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.oxiion.campuscart.domain.models.AdminViewModel
+import com.oxiion.campuscart.domain.models.AuthViewModel
 
 
 import androidx.compose.foundation.layout.size
@@ -33,6 +33,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -52,7 +53,7 @@ fun TopCampusManageProductsBar(
     topBarTitle: String,
     onBackClick: () -> Unit,
     onAddProductClick: () -> Unit
-) {
+){
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -104,22 +105,36 @@ fun TopCampusManageProductsBar(
 }
 
 @Composable
-fun ManageProductsScreen(viewModel: AdminViewModel, onAddProductClick: () -> Unit,onEditProductClick: () -> Unit) {
+fun ManageProductsScreen(
+    viewModel: AuthViewModel,
+    onAddProductClick: () -> Unit,
+    onEditProductClick: (Product) -> Unit,
+    onBackClick: () -> Unit
+) {
     val adminData = viewModel.adminData.collectAsState()
+
+    LaunchedEffect(Unit) {
+        // Fetch new data when the screen is first shown
+        viewModel.refreshAdminData()
+    }
+
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopCampusManageProductsBar(
                 topBarTitle = "Manage Products",
-                onBackClick = {},
+                onBackClick = {
+                    onBackClick()
+                },
                 onAddProductClick = {
                     onAddProductClick()
                 })
-        }) { innerpadding ->
+        }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerpadding)
+                .padding(innerPadding)
                 .background(Color(0xFFD8C4A0)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -128,8 +143,12 @@ fun ManageProductsScreen(viewModel: AdminViewModel, onAddProductClick: () -> Uni
             ) {
                 val count = adminData.value?.stockItems?.size
                 if (count != null) {
-                    items(count) { product ->
-                        ProductCard(adminData.value!!.stockItems[product], onEditProductClick =onEditProductClick )
+                    items(count) { index ->
+                        val product=adminData.value!!.stockItems[index]
+                        ProductCard(
+                            product,
+                            onEditProductClick = {onEditProductClick(product)}
+                        )
                     }
                 }
             }
@@ -138,10 +157,10 @@ fun ManageProductsScreen(viewModel: AdminViewModel, onAddProductClick: () -> Uni
 }
 
 @Composable
-fun ProductCard(product: Product,onEditProductClick:()->Unit) {
+fun ProductCard(product: Product, onEditProductClick: (Product) -> Unit) {
     Card(
         onClick = {
-            onEditProductClick()
+            onEditProductClick(product)
         },
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
@@ -177,13 +196,15 @@ fun ProductCard(product: Product,onEditProductClick:()->Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray).padding(start = 16.dp, top = 16.dp),
-               // horizontalAlignment = Alignment.CenterHorizontally
+                    .background(Color.LightGray)
+                    .padding(start = 16.dp, top = 16.dp),
+                // horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = "id: ${product.id}",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Black
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Price: ${product.price}",

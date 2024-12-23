@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oxiion.campuscart.common.LoadingDialog
 import com.oxiion.campuscart.data.models.roles.Admin
-import com.oxiion.campuscart.domain.models.AdminViewModel
+import com.oxiion.campuscart.domain.models.AuthViewModel
 import com.oxiion.campuscart.ui_app.components.CustomBlackGreenTextBox
 import com.oxiion.campuscart.ui_app.components.CustomButton
 import com.oxiion.campuscart.utils.LoginState
 
 @Composable
-fun AdminSignUpScreen(viewModel: AdminViewModel, onAdminSignUpSuccess:()->Unit){
+fun AdminSignUpScreen(viewModel: AuthViewModel, onAdminSignUpSuccess:()->Unit){
     val name =remember { mutableStateOf("") }
     val email =remember { mutableStateOf("") }
     val role = remember { mutableStateOf("") }

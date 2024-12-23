@@ -35,13 +35,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oxiion.campuscart.common.AppExitDialog
 import com.oxiion.campuscart.common.LoadingDialog
 import com.oxiion.campuscart.common.TopCampusAppBar
-import com.oxiion.campuscart.domain.models.AdminViewModel
+import com.oxiion.campuscart.domain.models.AuthViewModel
 import com.oxiion.campuscart.utils.LoginState
+import com.oxiion.campuscart.utils.SharedPreferencesManager
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun AdminDashboard(
-    viewModel: AdminViewModel,
+    viewModel: AuthViewModel,
     onLogoutClick:()->Unit,
     onManageUsersClick:()->Unit,
     onManageCamusMenClick:()->Unit,
@@ -50,8 +51,8 @@ fun AdminDashboard(
     val isLoading= remember { mutableStateOf(false) }
     val activity= LocalContext.current as Activity
     var showExitDialog by remember { mutableStateOf(false) }
-    //val loginState by viewModel.loginState.collectAsState()
     val logoutState by viewModel.signOutState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val adminData by viewModel.adminData.collectAsStateWithLifecycle()
     BackHandler {
@@ -163,6 +164,7 @@ fun AdminDashboard(
                     ),
                     onClick = {
                         viewModel.logout()
+                        SharedPreferencesManager.saveLogOutState(context, true)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF410002)
@@ -170,7 +172,10 @@ fun AdminDashboard(
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier.size(140.dp, 50.dp)
                 ) {
-                    Text(text = "Logout", fontSize = 18.sp)
+                    Text(
+                        text = "Logout",
+                        fontSize = 18.sp,
+                        color = Color(0xFFD0C5B4))
                 }
             }
             if (showExitDialog) {
@@ -180,23 +185,23 @@ fun AdminDashboard(
                 )
                 // Add your exit dialog here
             }
-            when(logoutState){
+            when (logoutState) {
                 is LoginState.Error -> {
-                    isLoading.value=false
-                    Log.i("Logout error","Error")
-                    // Add your error handling here
+                    isLoading.value = false
+                    Log.i("Logout error", "Error: ${(logoutState as LoginState.Error).message}")
                 }
-                LoginState.Idle -> { }
+                LoginState.Idle -> { /* No-op */ }
                 LoginState.Loading -> {
-                    isLoading.value=true
+                    isLoading.value = true
                     LoadingDialog(isLoading)
                 }
                 LoginState.Success -> {
-                    isLoading.value=false
-                    Log.i("isLoading","Success")
-                    onLogoutClick()
+                    isLoading.value = false
+                    Log.i("isLoading", "Success")
+                    onLogoutClick() // Trigger navigation here
                 }
             }
+//when block
         }
     }
 }

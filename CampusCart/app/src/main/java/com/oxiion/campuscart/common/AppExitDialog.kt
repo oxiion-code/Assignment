@@ -26,6 +26,7 @@ fun AppExitDialog(
     message: String = "Are you sure you want to exit?"
 ) {
     AlertDialog(
+        containerColor = Color(0xFFD0C5B4),
         title = {
             Box (modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center){

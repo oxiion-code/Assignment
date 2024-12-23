@@ -26,7 +26,7 @@ fun AppTextBox(text: MutableState<String>, placeholderName: String){
                 color = Color.DarkGray)
         },
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Gray,
             focusedTextColor = Color.Black,
             focusedBorderColor = Color(0xFFEAC16C),
             unfocusedBorderColor = Color(0xFFFFFFFF),
