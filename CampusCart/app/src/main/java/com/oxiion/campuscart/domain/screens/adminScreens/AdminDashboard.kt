@@ -104,7 +104,7 @@ fun AdminDashboard(
                     defaultElevation = 10.dp
                 ),
                 onClick = {
-
+                    onManageCamusMenClick()
                 },
                 modifier = Modifier
                     .height(100.dp)

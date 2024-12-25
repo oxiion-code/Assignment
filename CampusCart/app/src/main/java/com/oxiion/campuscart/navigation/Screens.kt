@@ -15,6 +15,9 @@ sealed class Screens(val route: String, val title: String) {
         data object LogIn : UserScreens(route = "UserLogin", title = "User LogIn")
     }
     sealed class CampusMenScreens(val route: String, val title: String){
-        data object LogIn : CampusMenScreens(route = "CampusManLogin", title = "CampusMan LogIn")
+        data object AddCampusMenOne:CampusMenScreens(route = "AddCampusMenOne", title = "Add CampusMen")
+        data object AddCampusMenTwo:CampusMenScreens(route = "AddCampusMenTwo", title = "Add CampusMen TwoCamp")
+        data object EditCampusMen:CampusMenScreens(route = "EditCampusMen", title = "Edit CampusMen")
+
     }
 }

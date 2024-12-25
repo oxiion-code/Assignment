@@ -3,6 +3,7 @@ package com.oxiion.campuscart.data.models.roles
 import com.oxiion.campuscart.data.models.productUtils.Address
 import com.oxiion.campuscart.data.models.productUtils.Product
 import com.oxiion.campuscart.data.models.productUtils.Order
+import kotlinx.serialization.Serializable
 
 data class User(
     var name: String,

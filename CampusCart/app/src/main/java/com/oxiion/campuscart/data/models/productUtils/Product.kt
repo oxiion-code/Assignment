@@ -1,5 +1,7 @@
 package com.oxiion.campuscart.data.models.productUtils
 
+import kotlinx.serialization.Serializable
+
 
 
 data class Product(
