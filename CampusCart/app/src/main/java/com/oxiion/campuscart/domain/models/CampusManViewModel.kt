@@ -80,7 +80,7 @@ class CampusManViewModel @Inject constructor(
             }
         }
     }
-    fun saveUpdatedProduct(campusman: CampusMan, imageUri: Uri?, authViewModel: AuthViewModel) {
+    fun saveUpdatedCampusman(campusman: CampusMan, imageUri: Uri?, authViewModel: AuthViewModel) {
         viewModelScope.launch {
             _updateCampusManState.value=StateData.Loading
             // Start uploading the image in parallel with saving the product data to Firestore
@@ -124,7 +124,7 @@ class CampusManViewModel @Inject constructor(
         }
     }
 
-    fun deleteProduct(campusMan:CampusMan, authViewModel: AuthViewModel){
+    fun deleteCampusman(campusMan:CampusMan, authViewModel: AuthViewModel){
         _deleteCampusManState.value=StateData.Loading
         viewModelScope.launch {
             val result=repository.deleteMember(campusMan.id)
@@ -136,7 +136,7 @@ class CampusManViewModel @Inject constructor(
                 _deleteCampusManState.value=StateData.Error(
                     result.exceptionOrNull()?.localizedMessage?:"Unknown error"
                 )
-                Log.i("ProductDeletion","Failed to delete product")
+                Log.i("member Deletion","Failed to delete product")
             }
         }
     }

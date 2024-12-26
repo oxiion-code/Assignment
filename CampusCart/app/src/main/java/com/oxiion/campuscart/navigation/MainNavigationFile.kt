@@ -90,25 +90,27 @@ fun StartNavigation(navController: NavController) {
                 onAddMemberClick = {
                     navController.navigate(Screens.CampusMenScreens.AddCampusMenOne.route)
                 },
-                onEditMemberClick = {
-                    navController.navigate(Screens.CampusMenScreens.EditCampusMen.route)
+                onEditMemberClick = {member->
+                    navController.navigate("${Screens.CampusMenScreens.EditCampusMen.route}/${member.id}")
                 }
             )
         }
-        composable(Screens.AdminScreens.ManageProducts.route) {
-            ManageProductsScreen(
-                viewModel = authViewModel,
-                onAddProductClick = {
-                    navController.navigate(Screens.AdminScreens.AddProduct.route)
+        composable("${Screens.CampusMenScreens.EditCampusMen.route}/{memberId}"){backStackEntry->
+            val memberId = backStackEntry.arguments?.getString("memberId")
+            val campusman = authViewModel.getCampusManById(memberId!!)
+            EditMemberScreen(
+                authViewModel = authViewModel,
+                campusManViewModel = campusManViewModel,
+                onConfirmationDeletion = {
+                    navController.navigateUp()
                 },
-                onEditProductClick = { product ->
-                    navController.navigate("${Screens.AdminScreens.EditProduct.route}/${product.id}")
-                },
+                campusman = campusman!!,
                 onBackClick = {
                     navController.navigateUp()
                 }
             )
         }
+
         composable(Screens.CampusMenScreens.AddCampusMenOne.route) {
             AddMemberScreenOne(
                 campusManViewModel = campusManViewModel,
@@ -128,8 +130,15 @@ fun StartNavigation(navController: NavController) {
                 adminViewModel = authViewModel
             )
         }
-        composable(Screens.CampusMenScreens.EditCampusMen.route) {
-            EditMemberScreen(
+        composable(Screens.AdminScreens.ManageProducts.route) {
+            ManageProductsScreen(
+                viewModel = authViewModel,
+                onAddProductClick = {
+                    navController.navigate(Screens.AdminScreens.AddProduct.route)
+                },
+                onEditProductClick = { product ->
+                    navController.navigate("${Screens.AdminScreens.EditProduct.route}/${product.id}")
+                },
                 onBackClick = {
                     navController.navigateUp()
                 }

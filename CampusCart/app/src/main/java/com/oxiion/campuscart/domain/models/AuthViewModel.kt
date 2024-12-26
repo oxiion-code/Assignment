@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oxiion.campuscart.data.models.productUtils.Product
 import com.oxiion.campuscart.data.models.roles.Admin
+import com.oxiion.campuscart.data.models.roles.CampusMan
 import com.oxiion.campuscart.domain.repository.AdminRepository
 import com.oxiion.campuscart.utils.LoginState
 import com.oxiion.campuscart.utils.SharedPreferencesManager
@@ -128,5 +129,8 @@ class AuthViewModel @Inject constructor(
     }
     fun getProductById(productId: String?): Product? {
         return adminData.value?.stockItems?.find { it.id == productId }
+    }
+    fun getCampusManById(campusmanId:String): CampusMan? {
+        return adminData.value?.employeeList?.find { it.id==campusmanId }
     }
 }

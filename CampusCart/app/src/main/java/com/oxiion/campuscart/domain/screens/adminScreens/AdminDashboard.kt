@@ -71,34 +71,11 @@ fun AdminDashboard(
                 .fillMaxSize()
                 .padding(screenPadding)
         ) {
-            Text("Hello ${adminData?.name}")
-            Card(
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 10.dp
-                ),
-                onClick = {
-                    onManageUsersClick()
-                },
-                modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF5C4300)
-                )
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(), // Ensures Box fills both width and height
-                    contentAlignment = Alignment.Center // Centers content both vertically and horizontally
-                ) {
-                    Text(
-                        text = "Manage Users",
-                        fontSize = 20.sp,
-                        color = Color(0xFFD8C4A0),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                } // Box
-            } // Card
+            Text(
+                text="Hello ${adminData?.name}",
+                color = Color.Black,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(9.dp))
             Card(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 10.dp
