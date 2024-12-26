@@ -139,7 +139,7 @@ fun AddMemberScreenTwo(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 enabled = uniqueCode == null,
-                onClick = { campusManViewModel.generateCampusManId("CampusMan Id") },
+                onClick = { campusManViewModel.generateCampusManId(cause="CampusMan Id", email = campusManData!!.address.email) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF402D00),
                     contentColor = Color(0xFFD8C4A0)

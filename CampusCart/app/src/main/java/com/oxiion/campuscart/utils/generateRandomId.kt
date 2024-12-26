@@ -3,7 +3,7 @@ package com.oxiion.campuscart.utils
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 
-fun generateRandomId(onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit,cause:String) {
+fun generateRandomId(onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit,cause:String,email:String) {
     val chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
     val db=FirebaseFirestore.getInstance()
     val collection="UniqueCodes"
@@ -16,9 +16,9 @@ fun generateRandomId(onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit
     db.collection(collection).document(newId).get()
         .addOnSuccessListener { document->
             if (document.exists()){
-                generateRandomId(onSuccess,onFailure,cause)
+                generateRandomId(onSuccess,onFailure,cause,email)
             }else{
-                val newIdData=mapOf("id" to newId,"cause" to cause)
+                val newIdData=mapOf("id" to newId,"cause" to cause,"email" to email)
                 db.collection(collection).document(newId).set(newIdData)
                     .addOnSuccessListener {
                         onSuccess(newId)

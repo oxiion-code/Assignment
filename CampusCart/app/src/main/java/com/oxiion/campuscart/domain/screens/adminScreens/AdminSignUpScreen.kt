@@ -32,10 +32,9 @@ import com.oxiion.campuscart.utils.LoginState
 fun AdminSignUpScreen(viewModel: AuthViewModel, onAdminSignUpSuccess:()->Unit){
     val name =remember { mutableStateOf("") }
     val email =remember { mutableStateOf("") }
-    val role = remember { mutableStateOf("") }
+    val collegeName =remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val confirmPassword = remember { mutableStateOf("") }
-    val secretKey = remember { mutableStateOf("") }
+    val signUpKey = remember { mutableStateOf("") }
     val signUpState by viewModel.signUpState.collectAsState()
     val isLoading = remember { mutableStateOf(false) }
     var showErrorMessage by remember { mutableStateOf(false) }
@@ -46,19 +45,12 @@ fun AdminSignUpScreen(viewModel: AuthViewModel, onAdminSignUpSuccess:()->Unit){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(
-            text = "Admin",
-            fontSize =40.sp,
+            text = "Admin SignUp",
+            fontSize =30.sp,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFD8C4A0)
             )
-        Text(
-            text = "Sign Up",
-            fontSize =35.sp,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFFD8C4A0)
-        )
         Spacer(modifier = Modifier.height(32.dp))
         CustomBlackGreenTextBox(
             text = name,
@@ -69,26 +61,29 @@ fun AdminSignUpScreen(viewModel: AuthViewModel, onAdminSignUpSuccess:()->Unit){
             placeholder = "Enter email address",
         )
         CustomBlackGreenTextBox(
+            text = collegeName,
+            placeholder = "Enter college name",
+        )
+        CustomBlackGreenTextBox(
             text = password,
             placeholder = "Enter password",
         )
         CustomBlackGreenTextBox(
-            text = role,
-            placeholder = "Enter your role",
-        )
-        CustomBlackGreenTextBox(
-            text=secretKey,
-            placeholder = "Enter secret key",
+            text=signUpKey,
+            placeholder = "Enter signup key",
         )
         CustomButton(
             text = "Sign Up",
             onButtonClick = {
-                viewModel.signIn(Admin(
-                    name = name.value,
-                    email = email.value,
-                    role = role.value,
-                    securityCode = secretKey.value,
-                ), password = password)
+               if(password.value==signUpKey.value){
+                   viewModel.signIn(Admin(
+                       name = name.value,
+                       email = email.value,
+                       role = "admin",
+                       collagename = collegeName.value,
+                       securityCode = "",
+                   ), password = password)
+               }
             }
         )//button
         if (showErrorMessage){

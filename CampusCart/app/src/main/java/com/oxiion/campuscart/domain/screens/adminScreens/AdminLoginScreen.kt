@@ -46,7 +46,6 @@ import com.oxiion.campuscart.utils.StateData
 import com.oxiion.campuscart.utils.SharedPreferencesManager
 
 
-private const val superAdminId = "123"
 @Composable
 private fun ErrorMessage(message: String) {
     Text(
@@ -145,8 +144,8 @@ fun AdminLoginScreen(viewModel: AuthViewModel, onLoginSuccess: () -> Unit, onSig
         Button(
             enabled = chances > 0,
             onClick = {
-                if (chances > 0 && securityCode.value == superAdminId) {
-                    viewModel.login(adminEmail.value, adminPassword.value)
+                if (chances > 0) {
+                    viewModel.login(adminEmail.value, adminPassword.value,securityCode.value)
                     // Authenticate admin
                 } else {
                     // Show error message
@@ -189,7 +188,6 @@ fun AdminLoginScreen(viewModel: AuthViewModel, onLoginSuccess: () -> Unit, onSig
                 // Reset loginState to prevent repeated toasts
                 viewModel.resetLoginState()
             }
-
             StateData.Idle -> {}
             StateData.Loading -> {
                 isLoading.value = true

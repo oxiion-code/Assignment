@@ -140,7 +140,7 @@ class CampusManViewModel @Inject constructor(
             }
         }
     }
-    fun generateCampusManId(cause:String){
+    fun generateCampusManId(cause:String,email:String){
         generateRandomId(
             onSuccess = {id->
                 Log.i("id generated",id)
@@ -150,7 +150,8 @@ class CampusManViewModel @Inject constructor(
                 _campusManId.value= null
                 Log.i("id generation error",it.toString())
             },
-            cause=cause
+            cause=cause,
+            email=email
         )
     }
     fun saveCampusManData(campusMan:CampusMan){

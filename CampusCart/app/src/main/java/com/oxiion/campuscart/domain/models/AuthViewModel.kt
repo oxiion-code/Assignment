@@ -12,6 +12,7 @@ import com.oxiion.campuscart.domain.repository.AdminRepository
 import com.oxiion.campuscart.utils.LoginState
 import com.oxiion.campuscart.utils.SharedPreferencesManager
 import com.oxiion.campuscart.utils.StateData
+import com.oxiion.campuscart.utils.generateRandomId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,12 +27,18 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
     private val _loginState = MutableStateFlow<StateData>(StateData.Idle)
     val loginState: StateFlow<StateData> get() = _loginState
+    private val _key = MutableStateFlow("")
+    val key: StateFlow<String> get() = _key
     private val _signUpState = MutableStateFlow<LoginState>(LoginState.Idle)
     val signUpState: StateFlow<LoginState> = _signUpState
     private val _signOutState = MutableStateFlow<LoginState>(LoginState.Idle)
     val signOutState: StateFlow<LoginState> = _signOutState
     private val _adminData = MutableStateFlow<Admin?>(null)
     val adminData: StateFlow<Admin?> = _adminData
+
+    private val _generateKeyState= MutableStateFlow<StateData>(StateData.Idle)
+    val generateKeyState: StateFlow<StateData> =_generateKeyState
+
 
     var uid: String? = ""
 
@@ -45,22 +52,33 @@ class AuthViewModel @Inject constructor(
 
     fun signIn(admin: Admin, password: MutableState<String>) {
         viewModelScope.launch {
+            _signOutState.value = LoginState.Idle
             _signUpState.value = LoginState.Loading
             val result = repository.signIn(admin, password.value)
             if (result.isSuccess) {
+                // Sign-up successful
                 _signUpState.value = LoginState.Success
+
+                // Get the UID of the newly created account
+                uid = result.getOrNull()
+                if (uid != null) {
+                    // Save UID to SharedPreferences for persistence
+                    SharedPreferencesManager.saveUid(context, uid!!)
+                    // Fetch admin data for the new account
+                    fetchAdminData(uid)
+                }
             } else {
+                // Handle sign-up failure
                 _signUpState.value =
                     LoginState.Error(result.exceptionOrNull()?.localizedMessage ?: "Unknown Error")
             }
         }
     }
-
-    fun login(userEmail: String, password: String) {
+    fun login(userEmail: String, password: String,key: String) {
         viewModelScope.launch {
             _signOutState.value = LoginState.Idle
             _loginState.value = StateData.Loading
-            val result = repository.login(userEmail, password)
+            val result = repository.login(userEmail, password,key)
             if (result.isSuccess) {
                 _loginState.value = StateData.Success
                 uid = result.getOrNull()
@@ -116,6 +134,34 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+    fun saveKey(key:String){
+        viewModelScope.launch {
+            _generateKeyState.value=StateData.Loading
+            val result=repository.generateAdminKey(key)
+            if (result.isSuccess){
+                _generateKeyState.value=StateData.Success
+                fetchAdminData(uid)
+                Log.i("Key saved","Success")
+            }else{
+                _generateKeyState.value=StateData.Error(result.exceptionOrNull()?.message.toString())
+                Log.i("Key saving error","failed to save")
+            }
+        }
+    }
+    fun generateKeyId(cause:String,email:String){
+        generateRandomId(
+            onSuccess = {id->
+                Log.i("id generated",id)
+                id.also { _key.value = it }
+            },
+            onFailure = {
+               _key.value= ""
+                Log.i("id generation error",it.toString())
+            },
+            cause=cause,
+            email = email
+        )
+    }
 
     private fun resetState() {
         _loginState.value = StateData.Idle
@@ -126,6 +172,9 @@ class AuthViewModel @Inject constructor(
 
     fun resetLoginState() {
         _loginState.value = StateData.Idle // Replace with the appropriate initial state
+    }
+    fun resetKeyState(){
+        _generateKeyState.value=StateData.Idle
     }
     fun getProductById(productId: String?): Product? {
         return adminData.value?.stockItems?.find { it.id == productId }

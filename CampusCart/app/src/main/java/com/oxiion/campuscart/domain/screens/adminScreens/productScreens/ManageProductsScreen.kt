@@ -38,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -112,13 +113,10 @@ fun ManageProductsScreen(
     onBackClick: () -> Unit
 ) {
     val adminData = viewModel.adminData.collectAsState()
-
     LaunchedEffect(Unit) {
         // Fetch new data when the screen is first shown
         viewModel.refreshAdminData()
     }
-
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
