@@ -134,35 +134,34 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-    fun saveKey(key:String){
-        viewModelScope.launch {
-            _generateKeyState.value=StateData.Loading
-            val result=repository.generateAdminKey(key)
-            if (result.isSuccess){
-                _generateKeyState.value=StateData.Success
-                fetchAdminData(uid)
-                Log.i("Key saved","Success")
-            }else{
-                _generateKeyState.value=StateData.Error(result.exceptionOrNull()?.message.toString())
-                Log.i("Key saving error","failed to save")
-            }
-        }
-    }
-    fun generateKeyId(cause:String,email:String){
+    fun generateKeyId(cause: String, email: String) {
+        _generateKeyState.value = StateData.Loading
         generateRandomId(
-            onSuccess = {id->
-                Log.i("id generated",id)
-                id.also { _key.value = it }
+            onSuccess = { id ->
+                Log.i("Key Generated", id)
+                _key.value = id // Set the key state
+                saveKey(id) // Save the key to Firestore
+                _generateKeyState.value = StateData.Success
             },
             onFailure = {
-               _key.value= ""
-                Log.i("id generation error",it.toString())
+                _key.value = "" // Reset the key state on failure
+                Log.e("Key Generation Error", it.toString())
             },
-            cause=cause,
+            cause = cause,
             email = email
         )
     }
 
+    fun saveKey(key: String) {
+        viewModelScope.launch {
+            val result = repository.generateAdminKey(key)
+            if (result.isSuccess) {
+               Log.i("saved to firestore","key changed for admin")
+            } else {
+                _generateKeyState.value = StateData.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+            }
+        }
+    }
     private fun resetState() {
         _loginState.value = StateData.Idle
         _signUpState.value = LoginState.Idle

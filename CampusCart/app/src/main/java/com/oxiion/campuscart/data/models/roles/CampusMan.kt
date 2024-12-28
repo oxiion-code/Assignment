@@ -11,5 +11,6 @@ data class CampusMan(
     var imageUrl:String="",
     val address: Address=Address(),
     val memberStockItems:List<Product> =listOf(),
-    val orders: List<Order> = listOf()
+    val orders: List<Order> = listOf(),
+    val pastOrders:List<Order> = listOf(),
 )

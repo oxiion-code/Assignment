@@ -32,7 +32,11 @@ class AdminRepositoryImpl @Inject constructor(
 
                 // Save the admin data to Firestore
                 firestore.collection("admins").document(userAdmin.uid).set(admin).await()
-
+                 val collegeData= mapOf(
+                     "admin id" to userAdmin.uid,
+                     "college" to admin.collagename
+                 )
+                firestore.collection("CollegeList").document(userAdmin.uid).set(collegeData)
                 // Log success message
                 Log.i("AdminRepository", "Admin data saved successfully in Firestore")
 

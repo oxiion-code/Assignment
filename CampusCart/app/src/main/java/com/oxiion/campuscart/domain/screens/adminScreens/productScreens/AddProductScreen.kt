@@ -43,6 +43,7 @@ import com.oxiion.campuscart.ui_app.components.CustomBlackGreenTextBox
 import com.oxiion.campuscart.ui_app.components.CustomButton
 import com.oxiion.campuscart.utils.LoginState
 import com.oxiion.campuscart.utils.StateData
+import java.util.UUID
 
 @Composable
 fun AddProductScreen(
@@ -138,7 +139,7 @@ fun AddProductScreen(
                     ).show()
                 } else {
                     val product = Product(
-                        id = "${productName.value}_${productCount.value}",
+                        id = UUID.randomUUID().toString(),
                         name = productName.value,
                         category = productDescription.value,
                         quantity = productCount.value.toIntOrNull() ?: 0,

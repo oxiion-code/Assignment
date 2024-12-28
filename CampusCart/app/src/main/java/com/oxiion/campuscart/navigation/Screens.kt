@@ -18,6 +18,10 @@ sealed class Screens(val route: String, val title: String) {
         data object AddCampusMenOne:CampusMenScreens(route = "AddCampusMenOne", title = "Add CampusMen")
         data object AddCampusMenTwo:CampusMenScreens(route = "AddCampusMenTwo", title = "Add CampusMen TwoCamp")
         data object EditCampusMen:CampusMenScreens(route = "EditCampusMen", title = "Edit CampusMen")
-
+        data object StockItems:CampusMenScreens(route = "StockItems", title = "Stock Items")
+        data object AddStockItem:CampusMenScreens(route = "AddStockItem", title = "Add StockItem")
+        data object EditStockItem:CampusMenScreens(route = "EditStockItem", title = "Edit StockItem")
+        data object LiveOrders:CampusMenScreens(route = "LiveOrders", title = "Edit StockItem")
+        data object PastOrders:CampusMenScreens(route = "PastOrders","Order History")
     }
 }

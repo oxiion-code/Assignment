@@ -146,10 +146,10 @@ fun AdminDashboard(
                 ),
                 onClick = {
                     if (adminData?.securityCode.isNullOrEmpty()){
-                        viewModel.generateKeyId("Admin key",adminData!!.email)
-                        viewModel.saveKey(key)
+                        viewModel.generateKeyId("Admin key", adminData!!.email)
                     }else{
                         clipboardManager.setText(AnnotatedString(text=adminData!!.securityCode ?: ""))
+                        Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier

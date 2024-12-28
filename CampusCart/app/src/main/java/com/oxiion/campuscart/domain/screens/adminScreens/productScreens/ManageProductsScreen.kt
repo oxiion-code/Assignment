@@ -167,7 +167,7 @@ fun ProductCard(product: Product, onEditProductClick: (Product) -> Unit) {
             .background(Color(0xFFD8C4A0))
     ) {
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().background(Color(0xFF78590C))
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -175,6 +175,7 @@ fun ProductCard(product: Product, onEditProductClick: (Product) -> Unit) {
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(8.dp)
+                    .background(Color(0xFF78590C))
             ) {
                 Image(
                     contentScale = ContentScale.Fit,
@@ -183,12 +184,6 @@ fun ProductCard(product: Product, onEditProductClick: (Product) -> Unit) {
                     modifier = Modifier
                         .size(100.dp)
                         .clip(RoundedCornerShape(20.dp))
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = product.name.uppercase(),
-                    fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.bodyMedium
                 )
             }//column
             Column(
@@ -199,7 +194,7 @@ fun ProductCard(product: Product, onEditProductClick: (Product) -> Unit) {
                 // horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "id: ${product.id}",
+                    text = product.name.uppercase(),
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
@@ -211,11 +206,6 @@ fun ProductCard(product: Product, onEditProductClick: (Product) -> Unit) {
                 )
                 Text(
                     text = "Quantity: ${product.quantity}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Black
-                )
-                Text(
-                    text = "Category: ${product.category}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.Black
                 )

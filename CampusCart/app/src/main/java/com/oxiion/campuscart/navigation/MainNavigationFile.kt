@@ -15,8 +15,12 @@ import com.oxiion.campuscart.domain.screens.adminScreens.AdminLoginScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.AdminSignUpScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.AddMemberScreenOne
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.AddMemberScreenTwo
+import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.AddStockItemScreen
+import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.DeliveryHistoryScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.EditMemberScreen
+import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.LiveOrdersScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.ManageCampusManScreen
+import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.ManageStockItemsScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.productScreens.AddProductScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.productScreens.EditProductScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.productScreens.ManageProductsScreen
@@ -95,41 +99,6 @@ fun StartNavigation(navController: NavController) {
                 }
             )
         }
-        composable("${Screens.CampusMenScreens.EditCampusMen.route}/{memberId}"){backStackEntry->
-            val memberId = backStackEntry.arguments?.getString("memberId")
-            val campusman = authViewModel.getCampusManById(memberId!!)
-            EditMemberScreen(
-                authViewModel = authViewModel,
-                campusManViewModel = campusManViewModel,
-                onConfirmationDeletion = {
-                    navController.navigateUp()
-                },
-                campusman = campusman!!,
-                onBackClick = {
-                    navController.navigateUp()
-                }
-            )
-        }
-
-        composable(Screens.CampusMenScreens.AddCampusMenOne.route) {
-            AddMemberScreenOne(
-                campusManViewModel = campusManViewModel,
-                onBackClick =
-                {
-                    navController.navigateUp()
-                },
-                onNextClick = { navController.navigate(Screens.CampusMenScreens.AddCampusMenTwo.route) }
-            )
-        }
-        composable(route=Screens.CampusMenScreens.AddCampusMenTwo.route ){
-            AddMemberScreenTwo(
-                campusManViewModel = campusManViewModel,
-                onBackClick = {
-                    navController.navigateUp()
-                },
-                adminViewModel = authViewModel
-            )
-        }
         composable(Screens.AdminScreens.ManageProducts.route) {
             ManageProductsScreen(
                 viewModel = authViewModel,
@@ -168,6 +137,84 @@ fun StartNavigation(navController: NavController) {
                         navController.navigateUp()
                     })
             }
+        }//
+
+        composable(Screens.CampusMenScreens.AddCampusMenOne.route) {
+            AddMemberScreenOne(
+                campusManViewModel = campusManViewModel,
+                onBackClick =
+                {
+                    navController.navigateUp()
+                },
+                onNextClick = { navController.navigate(Screens.CampusMenScreens.AddCampusMenTwo.route) }
+            )
+        }
+        composable(route=Screens.CampusMenScreens.AddCampusMenTwo.route ){
+            AddMemberScreenTwo(
+                campusManViewModel = campusManViewModel,
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                adminViewModel = authViewModel
+            )
+        }
+        composable("${Screens.CampusMenScreens.EditCampusMen.route}/{memberId}"){backStackEntry->
+            val memberId = backStackEntry.arguments?.getString("memberId")
+            val campusman = authViewModel.getCampusManById(memberId!!)
+            EditMemberScreen(
+                authViewModel = authViewModel,
+                campusManViewModel = campusManViewModel,
+                onConfirmationDeletion = {
+                    navController.navigateUp()
+                },
+                campusman = campusman!!,
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                onStockItemsClick = {
+                    //navigate to stock items screen
+                    navController.navigate(Screens.CampusMenScreens.StockItems.route)
+                },
+                onDeliveryHistoryClick = {
+                    //navigate to Delivery history screen
+                    navController.navigate(Screens.CampusMenScreens.PastOrders.route)
+                },
+                onLiveOrdersClick = {
+                    //navigate to live orders screen
+                    navController.navigate(Screens.CampusMenScreens.LiveOrders.route)
+                }
+            )
+        }
+        composable(Screens.CampusMenScreens.StockItems.route){
+            ManageStockItemsScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                onAddStockItemClick = {
+                    navController.navigate(Screens.CampusMenScreens.AddStockItem.route)
+                }
+            )
+        }
+        composable(Screens.CampusMenScreens.AddStockItem.route){
+            AddStockItemScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(Screens.CampusMenScreens.LiveOrders.route){
+            LiveOrdersScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(Screens.CampusMenScreens.PastOrders.route){
+            DeliveryHistoryScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }

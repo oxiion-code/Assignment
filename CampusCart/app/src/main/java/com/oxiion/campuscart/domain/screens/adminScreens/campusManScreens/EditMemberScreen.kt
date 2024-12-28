@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,8 +62,12 @@ import com.oxiion.campuscart.utils.StateData
 fun TopCampusEditMemberAppBar(
     topBarTitle: String,
     onBackClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onDeliveryHistoryClick: () -> Unit,
+    onStockItemsClick: () -> Unit,
+    onLiveOrdersClick: () -> Unit
 ) {
+    var expanded by remember { mutableStateOf(false) }
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -97,27 +104,94 @@ fun TopCampusEditMemberAppBar(
         actions = {
             IconButton(
                 onClick = {
-                    onDeleteClick()
+                    //onDeleteClick()
+                    expanded = !expanded
                 },
                 content = {
                     Icon(
                         tint = Color(0xFF261900),
                         modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Default.Delete,
+                        imageVector = Icons.Default.MoreVert,
                         contentDescription = "Search"
                     )
                 }
             )
-        }
-
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.background(Color(0xFF78590C))
+            ) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = "Stock Items",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFFCCEBC3)
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        // Handle Stock Items action here
+                        onStockItemsClick()
+                    }
+                )
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = "Live orders", style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFFCCEBC3)
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        // Handle Delivery History action here
+                        onLiveOrdersClick()
+                    }
+                )
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = "Past orders",  style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFFCCEBC3)
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        // Handle Delivery History action here
+                        onDeliveryHistoryClick()
+                    }
+                )
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = "Delete Member", style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFFCCEBC3)
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        onDeleteClick()
+                        // Handle Delete Member action here
+                    }
+                )
+            }
+        }//actions
     )
+
 }
 
 
 @Composable
 fun EditMemberScreen(
+    onLiveOrdersClick: () -> Unit,
     onBackClick: () -> Unit,
     onConfirmationDeletion: () -> Unit,
+    onStockItemsClick: () -> Unit,
+    onDeliveryHistoryClick: () -> Unit,
     campusman: CampusMan,
     authViewModel: AuthViewModel,
     campusManViewModel: CampusManViewModel
@@ -144,7 +218,6 @@ fun EditMemberScreen(
     ) { uri: Uri? ->
         uri?.let { imageUri = it }
     }
-
     Scaffold(
         topBar = {
             TopCampusEditMemberAppBar(
@@ -154,6 +227,15 @@ fun EditMemberScreen(
                 },
                 onDeleteClick = {
                     showDeleteConfirmDialog.value = true
+                },
+                onDeliveryHistoryClick = {
+                    onDeliveryHistoryClick()
+                },
+                onStockItemsClick = {
+                    onStockItemsClick()
+                },
+                onLiveOrdersClick = {
+                    onLiveOrdersClick()
                 }
             )
         }
@@ -257,21 +339,23 @@ fun EditMemberScreen(
             is StateData.Error -> {
                 showDeleteConfirmDialog.value = false
                 isLoadingDelete.value = false
-                Toast.makeText(context, "Product deleted", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Failed to delete", Toast.LENGTH_LONG).show()
                 campusManViewModel.resetDeleteMemberState()
             }
 
             StateData.Idle -> {
 
             }
+
             StateData.Loading -> {
                 isLoadingDelete.value = true
                 LoadingDialog(isLoadingDelete)
             }
+
             StateData.Success -> {
                 showDeleteConfirmDialog.value = false
                 isLoading.value = false
-                Toast.makeText(context, "Product deleted", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Member deleted", Toast.LENGTH_LONG).show()
                 onConfirmationDeletion()
                 campusManViewModel.resetDeleteMemberState()
             }
