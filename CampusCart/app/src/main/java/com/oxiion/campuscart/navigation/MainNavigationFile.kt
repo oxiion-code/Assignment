@@ -18,6 +18,7 @@ import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.AddMem
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.AddStockItemScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.DeliveryHistoryScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.EditMemberScreen
+import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.EditStockItemScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.LiveOrdersScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.ManageCampusManScreen
 import com.oxiion.campuscart.domain.screens.adminScreens.campusManScreens.ManageStockItemsScreen
@@ -173,33 +174,60 @@ fun StartNavigation(navController: NavController) {
                 },
                 onStockItemsClick = {
                     //navigate to stock items screen
-                    navController.navigate(Screens.CampusMenScreens.StockItems.route)
+                    navController.navigate("${Screens.CampusMenScreens.StockItems.route}/${campusman.id}")
                 },
                 onDeliveryHistoryClick = {
                     //navigate to Delivery history screen
-                    navController.navigate(Screens.CampusMenScreens.PastOrders.route)
+                    navController.navigate("${Screens.CampusMenScreens.PastOrders.route}/${campusman.id}")
                 },
                 onLiveOrdersClick = {
                     //navigate to live orders screen
-                    navController.navigate(Screens.CampusMenScreens.LiveOrders.route)
+                    navController.navigate("${Screens.CampusMenScreens.LiveOrders.route}/${campusman.id}")
                 }
             )
         }
-        composable(Screens.CampusMenScreens.StockItems.route){
+        composable("${Screens.CampusMenScreens.StockItems.route}/{memberId}"){backStackEntry->
+            val memberId = backStackEntry.arguments?.getString("memberId")
             ManageStockItemsScreen(
                 onBackClick = {
                     navController.navigateUp()
                 },
                 onAddStockItemClick = {
-                    navController.navigate(Screens.CampusMenScreens.AddStockItem.route)
-                }
+                    navController.navigate("${Screens.CampusMenScreens.AddStockItem.route}/${memberId}")
+                },
+                campusManViewModel = campusManViewModel,
+                onEditProductClick = { product->
+                    navController.navigate("${Screens.CampusMenScreens.EditStockItem.route}/${product.id}/$memberId")
+                },
+                campusManId = memberId!!
             )
         }
-        composable(Screens.CampusMenScreens.AddStockItem.route){
+        composable("${Screens.CampusMenScreens.AddStockItem.route}/{memberId}") {backStackEntry->
+            val memberId = backStackEntry.arguments?.getString("memberId")
             AddStockItemScreen(
+                campusmanId = memberId!!,
+                authViewModel = authViewModel,
+                campusManViewModel = campusManViewModel,
                 onBackClick = {
                     navController.navigateUp()
                 }
+            )
+        }
+        composable("${Screens.CampusMenScreens.EditStockItem.route}/{productId}/{memberId}") { backStackEntry ->
+            val productId=backStackEntry.arguments?.getString("productId")
+            val memberId=backStackEntry.arguments?.getString("memberId")
+            EditStockItemScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                onConfirmDeleteClick = {
+                    navController.navigateUp()
+                },
+                productId = productId!!,
+                memberId=memberId!!,
+                authViewModel = authViewModel,
+                campusManViewModel = campusManViewModel
+
             )
         }
         composable(Screens.CampusMenScreens.LiveOrders.route){

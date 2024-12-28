@@ -44,13 +44,19 @@ import com.oxiion.campuscart.ui_app.components.CustomButton
 
 
 @Composable
-fun CustomBlackGreenMemberBox(text: MutableState<String>, placeholder:String,onValueChange:(String)->Unit){
+fun CustomBlackGreenMemberBox(
+    text: MutableState<String>,
+    placeholder: String,
+    onValueChange: (String) -> Unit
+) {
 
-    OutlinedTextField(value =text.value ,
+    OutlinedTextField(
+        value = text.value,
         modifier = Modifier.size(width = 300.dp, height = 56.dp),
         onValueChange = {
-            text.value=it
-            onValueChange(it) },
+            text.value = it
+            onValueChange(it)
+        },
         placeholder = {
             Text(
                 text = placeholder, color = colorResource(R.color.white)
@@ -78,13 +84,13 @@ fun AddMemberScreenOne(
     campusManViewModel: CampusManViewModel
 ) {
     val campusManData by campusManViewModel.campusManData.collectAsState()
-    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(campusManData?.imageUrl ?:"" )) }
+    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(campusManData?.imageUrl ?: "")) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
-            imageUri=uri
+            imageUri = uri
             campusManViewModel.saveCampusManData(
                 campusManData!!.copy(imageUrl = uri.toString())
             )
@@ -110,7 +116,7 @@ fun AddMemberScreenOne(
                     Image(
                         painter = if (imageUri != null) rememberAsyncImagePainter(imageUri)
                         else painterResource(R.drawable.default_image),
-                        contentDescription ="campusman Image",
+                        contentDescription = "campusman Image",
                         modifier = Modifier
                             .size(200.dp)
                             .background(Color.Gray, RoundedCornerShape(10.dp)),
@@ -123,15 +129,15 @@ fun AddMemberScreenOne(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 item {
-                   CustomBlackGreenMemberBox(
-                       text= remember { mutableStateOf(campusManData!!.address.fullName) },
-                       placeholder = "Enter name",
-                       onValueChange = {
-                           campusManViewModel.saveCampusManData(
-                               campusManData!!.copy(address = campusManData!!.address.copy(fullName = it))
-                           )
-                       }
-                   )
+                    CustomBlackGreenMemberBox(
+                        text = remember { mutableStateOf(campusManData!!.address.fullName) },
+                        placeholder = "Enter name",
+                        onValueChange = {
+                            campusManViewModel.saveCampusManData(
+                                campusManData!!.copy(address = campusManData!!.address.copy(fullName = it))
+                            )
+                        }
+                    )
                 }
                 item {
                     CustomBlackGreenMemberBox(
@@ -139,8 +145,12 @@ fun AddMemberScreenOne(
                         placeholder = "Enter hostel name",
                         onValueChange = {
                             campusManViewModel.saveCampusManData(
-                               campusManData!!.copy(address = campusManData!!.address.copy(hostelNumber = it))
-                           )
+                                campusManData!!.copy(
+                                    address = campusManData!!.address.copy(
+                                        hostelNumber = it
+                                    )
+                                )
+                            )
                         }
                     )
                 }
@@ -150,7 +160,11 @@ fun AddMemberScreenOne(
                         placeholder = "Enter room number",
                         onValueChange = {
                             campusManViewModel.saveCampusManData(
-                                campusManData!!.copy(address = campusManData!!.address.copy(roomNumber = it))
+                                campusManData!!.copy(
+                                    address = campusManData!!.address.copy(
+                                        roomNumber = it
+                                    )
+                                )
                             )
                         }
                     )
@@ -161,7 +175,11 @@ fun AddMemberScreenOne(
                         placeholder = "Enter phone number",
                         onValueChange = {
                             campusManViewModel.saveCampusManData(
-                                campusManData!!.copy(address = campusManData!!.address.copy(phoneNumber = it))
+                                campusManData!!.copy(
+                                    address = campusManData!!.address.copy(
+                                        phoneNumber = it
+                                    )
+                                )
                             )
                         }
                     )
