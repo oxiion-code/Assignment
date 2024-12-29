@@ -3,6 +3,7 @@ package com.oxiion.campuscart.domain.repository
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.oxiion.campuscart.data.models.productUtils.Order
 import com.oxiion.campuscart.data.models.productUtils.Product
 import com.oxiion.campuscart.data.models.roles.Admin
 import com.oxiion.campuscart.data.models.roles.CampusMan
@@ -139,4 +140,28 @@ class CampusManRepositoryImpl @Inject constructor(
         }
     }
 
+
+    override suspend fun getLiveOrders(adminId: String, campusManId: String): List<Order> {
+        return try {
+            val snapshot = firestore.collection("admins").document(adminId).get().await()
+            val admin = snapshot.toObject(Admin::class.java)
+            val campusMan = admin?.employeeList?.find { it.id == campusManId }
+            campusMan?.orders?.filter { it.status.isOnProgress } ?: emptyList()
+        } catch (e: Exception) {
+            Log.e("LiveOrdersRepo", "Error fetching live orders: ${e.message}")
+            emptyList()
+        }
+    }
+
+    override suspend fun getPastOrders(adminId: String, campusManId: String): List<Order> {
+        return try {
+            val snapshot = firestore.collection("admins").document(adminId).get().await()
+            val admin = snapshot.toObject(Admin::class.java)
+            val campusMan = admin?.employeeList?.find { it.id == campusManId }
+            campusMan?.orders?.filter { !it.status.isOnProgress } ?: emptyList()
+        } catch (e: Exception) {
+            Log.e("LiveOrdersRepo", "Error fetching live orders: ${e.message}")
+            emptyList()
+        }
+    }
 }

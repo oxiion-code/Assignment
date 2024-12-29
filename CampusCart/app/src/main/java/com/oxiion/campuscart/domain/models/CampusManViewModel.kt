@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.storage.FirebaseStorage
+import com.oxiion.campuscart.data.models.productUtils.Order
 import com.oxiion.campuscart.data.models.productUtils.Product
 import com.oxiion.campuscart.data.models.roles.CampusMan
 import com.oxiion.campuscart.domain.repository.CampusManRepository
@@ -54,6 +55,12 @@ class CampusManViewModel @Inject constructor(
 
     private val _deleteCampusManState = MutableStateFlow<StateData>(StateData.Idle)
     val deleteCampusManState: StateFlow<StateData> = _deleteCampusManState
+
+    private val _liveOrders = MutableStateFlow<List<Order>>(emptyList())
+    val liveOrders: StateFlow<List<Order>> = _liveOrders
+
+    private val _pastOrders = MutableStateFlow<List<Order>>(emptyList())
+    val pastOrders: StateFlow<List<Order>> = _liveOrders
 
     fun addCampusManWithImage(
         uri: Uri,
@@ -327,6 +334,33 @@ class CampusManViewModel @Inject constructor(
             email = email
         )
     }
+
+    fun fetchLiveOrders(campusManId: String, authViewModel: AuthViewModel) {
+        viewModelScope.launch {
+            try {
+                val adminId = authViewModel.uid // Get the current user's UID
+                val orders = repository.getLiveOrders(adminId!!, campusManId)
+                _liveOrders.value = orders
+            } catch (e: Exception) {
+                _liveOrders.value = emptyList()
+                Log.e("LiveOrdersVM", "Error fetching live orders: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchPastOrders(campusManId: String, authViewModel: AuthViewModel) {
+        viewModelScope.launch {
+            try {
+                val adminId = authViewModel.uid // Get the current user's UID
+                val orders = repository.getPastOrders(adminId!!, campusManId)
+                _pastOrders.value = orders
+            } catch (e: Exception) {
+                _pastOrders.value = emptyList()
+                Log.e("pastOrdersVM", "Error fetching past orders: ${e.message}")
+            }
+        }
+    }
+
 
     fun saveCampusManData(campusMan: CampusMan) {
         _campusManData.value = campusMan

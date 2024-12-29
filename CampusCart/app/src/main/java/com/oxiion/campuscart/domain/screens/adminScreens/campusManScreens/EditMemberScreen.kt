@@ -234,9 +234,7 @@ fun EditMemberScreen(
                 onStockItemsClick = {
                     onStockItemsClick()
                 },
-                onLiveOrdersClick = {
-                    onLiveOrdersClick()
-                }
+                onLiveOrdersClick = onLiveOrdersClick
             )
         }
     ) { innerPadding ->

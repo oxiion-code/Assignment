@@ -227,21 +227,28 @@ fun StartNavigation(navController: NavController) {
                 memberId=memberId!!,
                 authViewModel = authViewModel,
                 campusManViewModel = campusManViewModel
-
             )
         }
-        composable(Screens.CampusMenScreens.LiveOrders.route){
+        composable("${Screens.CampusMenScreens.LiveOrders.route}/{memberId}"){backStackEntry->
+            val memberId = backStackEntry.arguments?.getString("memberId")
             LiveOrdersScreen(
                 onBackClick = {
                     navController.navigateUp()
-                }
+                },
+                campusmanId = memberId!!,
+                authViewModel = authViewModel,
+                campusManViewModel = campusManViewModel
             )
         }
-        composable(Screens.CampusMenScreens.PastOrders.route){
+        composable("${Screens.CampusMenScreens.PastOrders.route}/{memberId}"){backStackEntry->
+            val memberId = backStackEntry.arguments?.getString("memberId")
             DeliveryHistoryScreen(
                 onBackClick = {
                     navController.navigateUp()
-                }
+                },
+                campusmanId = memberId!!,
+                authViewModel = authViewModel,
+                campusManViewModel = campusManViewModel
             )
         }
     }
