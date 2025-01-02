@@ -1,16 +1,19 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
-    namespace = "com.meow.campuscart_user"
-    compileSdk = 34
+    namespace = "com.oxiion.campuscart_user"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.meow.campuscart_user"
+        applicationId = "com.oxiion.campuscart_user"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -66,4 +69,38 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //firebase files
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.5.3")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+
+    //Dragger Hilt
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:hilt-android-compiler:2.48")
+    ksp("androidx.hilt:hilt-compiler:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+
+    // Lifecycle components
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    //serialisation
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    //implementation 'phonepe.intentsdk.android.release:IntentSDK:2.4.3'
+    implementation("phonepe.intentsdk.android.release:IntentSDK:2.4.3")
+    //Retrofit implementation
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")  // Retrofit library
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }
