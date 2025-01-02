@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.oxiion.campuscart_user" />
+                  <option name="mobileSdkAppId" value="1:793093589314:android:0da0e7117d9783204fa0db" />
+                  <option name="projectId" value="campuscart-34351" />
+                  <option name="projectNumber" value="793093589314" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

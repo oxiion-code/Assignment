@@ -1,4 +1,4 @@
-package com.meow.campuscart_user
+package com.oxiion.campuscart_user
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,18 +10,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.meow.campuscart_user.ui.theme.CampusCartUserTheme
+import com.oxiion.campuscart_user.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CampusCartUserTheme {
+            AppTheme{
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Rudra",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -36,12 +35,4 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         text = "Hello $name!",
         modifier = modifier
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CampusCartUserTheme {
-        Greeting("Android")
-    }
 }
