@@ -1,6 +1,8 @@
 package com.oxiion.campuscart_user.ui.theme
 import androidx.compose.ui.graphics.Color
 
+val authScreen=Color(0xFF50606F)
+
 val primaryLight = Color(0xFF29638A)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFCBE6FF)
@@ -23,8 +25,8 @@ val surfaceLight = Color(0xFFF7F9FF)
 val onSurfaceLight = Color(0xFF181C20)
 val surfaceVariantLight = Color(0xFFDEE3EA)
 val onSurfaceVariantLight = Color(0xFF41474D)
-val outlineLight = Color(0xFF72787E)
-val outlineVariantLight = Color(0xFFC1C7CE)
+val outlineLight = Color(0xFF72787E) //grey
+val outlineVariantLight = Color(0xFFC1C7CE)//light grey
 val scrimLight = Color(0xFF000000)
 val inverseSurfaceLight = Color(0xFF2D3135)
 val inverseOnSurfaceLight = Color(0xFFEEF1F6)
