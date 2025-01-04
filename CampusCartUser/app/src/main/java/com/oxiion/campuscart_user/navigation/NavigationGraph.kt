@@ -1,7 +1,5 @@
 package com.oxiion.campuscart_user.navigation
 
-
-import android.transition.Scene
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -12,6 +10,7 @@ import androidx.navigation.compose.composable
 import com.oxiion.campuscart_user.ui.screens.SplashScreen
 import com.oxiion.campuscart_user.ui.screens.auth.ForgotPasswordScreen
 import com.oxiion.campuscart_user.ui.screens.auth.SignInScreen
+import com.oxiion.campuscart_user.ui.screens.auth.SignUpInfoScreen
 import com.oxiion.campuscart_user.ui.screens.auth.SignUpScreen
 import com.oxiion.campuscart_user.ui.screens.home.HomeScreen
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
@@ -19,10 +18,7 @@ import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 @Composable
 fun StartAppNavigation(navController: NavController, paddingValues: PaddingValues) {
     val authViewModel: AuthViewModel = hiltViewModel()
-    NavHost(
-        navController = navController as NavHostController,
-        startDestination = Screens.SplashScreen.Splash.route
-    ) {
+    NavHost(navController = navController as NavHostController, startDestination = Screens.SplashScreen.Splash.route) {
         composable(Screens.SplashScreen.Splash.route) {
             SplashScreen(
                 authViewModel = authViewModel,
@@ -35,7 +31,8 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
             )
         }
         composable(Screens.Auth.SignIn.route) {
-            SignInScreen(paddingValues = paddingValues,
+            SignInScreen(
+                paddingValues = paddingValues,
                 onForgotPasswordClick = {
                     navController.navigate(Screens.Auth.ForgotPassword.route)
                 },
@@ -43,14 +40,33 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
                     navController.navigate(Screens.Auth.SignUp.route)
                 },
                 onSignInSuccess = {
-                    navController.navigate(Screens.Home.HomeScreen.route)
-                })
+                    navController.navigate(Screens.Home.HomeScreen.route) {
+                        popUpTo(Screens.Auth.SignIn.route) { inclusive = true }
+                    }
+                },
+                authViewModel = authViewModel
+            )
         }
-        composable(Screens.Auth.SignUp.route) { SignUpScreen(
-            paddingValues = paddingValues,
-            onSignUpSuccess = {
-
-            }) }
+        composable(Screens.Auth.SignUp.route) {
+            SignUpScreen(
+                paddingValues = paddingValues,
+                authViewModel = authViewModel,
+                onNextClick = {
+                    navController.navigate(Screens.Auth.SignUpInfo.route)
+                }
+            )
+        }
+        composable(Screens.Auth.SignUpInfo.route) {
+            SignUpInfoScreen(
+                paddingValues = paddingValues,
+                authViewModel = authViewModel,
+                onSignUpSuccess = {
+                    navController.navigate(Screens.Home.HomeScreen.route) {
+                        popUpTo(Screens.Auth.SignUp.route) { inclusive = true }
+                    }
+                }
+            )
+        }
         composable(Screens.Auth.ForgotPassword.route) {
             ForgotPasswordScreen(
                 innerPaddingValues = paddingValues,
@@ -61,6 +77,15 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
         }
         composable(Screens.Home.HomeScreen.route) {
             HomeScreen()
+        }
+        composable(Screens.Cart.CartScreen.route) {
+            // Implement CartScreen UI
+        }
+        composable(Screens.Orders.OrdersScreen.route) {
+            // Implement OrdersScreen UI
+        }
+        composable(Screens.Profile.ProfileScreen.route) {
+            // Implement ProfileScreen UI
         }
     }
 }

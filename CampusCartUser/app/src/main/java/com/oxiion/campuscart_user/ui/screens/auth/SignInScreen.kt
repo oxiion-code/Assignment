@@ -17,22 +17,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
-import coil.compose.rememberAsyncImagePainter
-import com.oxiion.campuscart_user.R
 import com.oxiion.campuscart_user.ui.components.AppAlertBox
 import com.oxiion.campuscart_user.ui.components.AppCustomWhiteButton
 import com.oxiion.campuscart_user.ui.components.AppOutlinedTextBox
+import com.oxiion.campuscart_user.ui.components.LoadingDialogSmall
+import com.oxiion.campuscart_user.utils.DataState
+import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 
 @Composable
 fun SignInScreen(
     paddingValues: PaddingValues,
     onForgotPasswordClick:()->Unit,
     onCreateAccountClick:()->Unit,
-    onSignInSuccess:()->Unit
+    onSignInSuccess:()->Unit,
+    authViewModel: AuthViewModel
 ) {
     var showExitDialog by remember { mutableStateOf(false) }
-
+    val isLoading= remember { mutableStateOf(false) }
     // BackHandler for handling back press
     BackHandler {
         showExitDialog = true
@@ -41,6 +42,7 @@ fun SignInScreen(
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isPasswordVisible = remember { mutableStateOf(false) }
+    val collegeListState by authViewModel.getCollegeListState.collectAsState()
     if (showExitDialog) {
         AppAlertBox(
             onConfirm = {
@@ -115,7 +117,7 @@ fun SignInScreen(
         }
         AppCustomWhiteButton(
             onClick = {
-                Toast.makeText(context, "Sign In Button Clicked", Toast.LENGTH_SHORT).show()
+
             },
             text = "Sign In",
         )

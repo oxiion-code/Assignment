@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,6 +32,26 @@ fun AppCustomWhiteButton(onClick: () -> Unit, text: String) {
         Text(
             text = text,
             style = MaterialTheme.typography.titleLarge,
+        )
+    }
+}
+@Composable
+fun AppCustomWhiteButtonSmall(onClick: () -> Unit, text: String) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .width(300.dp)
+            .padding(6.dp)
+            .height(45.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black
+        )
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }

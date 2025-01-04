@@ -18,7 +18,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.oxiion.campuscart_user.R
-
 @Composable
 fun AppOutlinedTextBox(
     givenValue: MutableState<String>,
@@ -26,7 +25,6 @@ fun AppOutlinedTextBox(
     keyboardType: KeyboardType,
     isPassword: Boolean,
     isPasswordVisible: (MutableState<Boolean>)? = null,
-    onIconClick: (() -> Unit)? = null
 ) {
     OutlinedTextField(
         value = givenValue.value,
@@ -36,7 +34,7 @@ fun AppOutlinedTextBox(
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = keyboardType
         ),
-        visualTransformation = if (isPassword && !isPasswordVisible?.value!!) {
+        visualTransformation = if (isPassword && (isPasswordVisible?.value == false)) {
             PasswordVisualTransformation()
         } else {
             VisualTransformation.None
@@ -45,14 +43,12 @@ fun AppOutlinedTextBox(
         modifier = Modifier.size(300.dp, 65.dp),
         singleLine = true,
         trailingIcon = {
-            if (isPassword) {
+            if (isPassword && isPasswordVisible != null) {
                 IconButton(onClick = {
-                    if (isPasswordVisible != null) {
-                        isPasswordVisible.value = !isPasswordVisible.value
-                    }
+                    isPasswordVisible.value = !isPasswordVisible.value
                 }) {
                     Icon(
-                        painter = if (isPasswordVisible!!.value) {
+                        painter = if (isPasswordVisible.value) {
                             painterResource(id = R.drawable.baseline_visibility)
                         } else {
                             painterResource(id = R.drawable.baseline_visibility_off_24)

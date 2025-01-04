@@ -14,16 +14,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import coil.compose.rememberAsyncImagePainter
-import com.oxiion.campuscart_user.R
 import com.oxiion.campuscart_user.ui.components.AppCustomWhiteButton
 import com.oxiion.campuscart_user.ui.components.AppOutlinedTextBox
+import com.oxiion.campuscart_user.ui.components.LoadingDialogSmall
+import com.oxiion.campuscart_user.utils.DataState
+import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 
 @Composable
 fun SignUpScreen(
     paddingValues: PaddingValues,
-    onSignUpSuccess: () -> Unit
+    authViewModel: AuthViewModel,
+    onNextClick: () -> Unit
 ) {
     val context = LocalContext.current
     val email = remember { mutableStateOf("") }
@@ -31,6 +32,8 @@ fun SignUpScreen(
     val reEnterPassword = remember { mutableStateOf("") }
     val isPasswordVisible = remember { mutableStateOf(false) }
     val isRenterPasswordVisible = remember { mutableStateOf(false) }
+    val isLoading= remember { mutableStateOf(false) }
+    val collegeListState by authViewModel.getCollegeListState.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,10 +81,27 @@ fun SignUpScreen(
         }
         AppCustomWhiteButton(
             onClick = {
-                Toast.makeText(context, "Created account", Toast.LENGTH_SHORT).show()
+                authViewModel.getCollegeList()
+                onNextClick()
             },
-            text = "Create account",
+            text = "Next",
         )
         Spacer(modifier = Modifier.height(16.dp))
+    }
+    when(collegeListState){
+        is DataState.Error -> {
+            isLoading.value=false
+            Toast.makeText(context,"Unable to fetch data", Toast.LENGTH_SHORT).show()
+        }
+        DataState.Idle -> {
+
+        }
+        DataState.Loading ->{
+            isLoading.value=true
+            LoadingDialogSmall(isLoading)
+        }
+        DataState.Success -> {
+            isLoading.value=false
+        }
     }
 }
