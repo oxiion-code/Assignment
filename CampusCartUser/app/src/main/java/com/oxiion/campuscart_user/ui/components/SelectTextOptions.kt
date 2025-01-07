@@ -24,12 +24,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-
 @Composable
 fun ShowTextSelectionDialog(
     showDialog: MutableState<Boolean>,
     selectedCollege: MutableState<String>,
-    collageList: List<String>
+    collageList: List<String>,
+    onSelectionChange: (String) -> Unit // Callback for selection change
 ) {
     if (showDialog.value) {
         Dialog(
@@ -71,6 +71,7 @@ fun ShowTextSelectionDialog(
                                     .clickable {
                                         selectedCollege.value = college
                                         showDialog.value = false
+                                        onSelectionChange(college) // Notify selection change
                                     }
                             )
                         }

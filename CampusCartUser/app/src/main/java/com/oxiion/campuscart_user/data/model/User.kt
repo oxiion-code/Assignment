@@ -2,11 +2,8 @@ package com.oxiion.campuscart_user.data.model
 
 
 data class User(
-    var name: String,
-    var email:String,
-    var college:String,
-    var phoneNumber:String,
-    var password:String,
+    val uid: String="",
+    var college:String="",
     var profilePicture: String? = null,
     var address: Address? = null,
     var cart: List<Product> = listOf(),

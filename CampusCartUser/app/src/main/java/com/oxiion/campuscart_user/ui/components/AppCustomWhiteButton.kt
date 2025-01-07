@@ -40,7 +40,7 @@ fun AppCustomWhiteButtonSmall(onClick: () -> Unit, text: String) {
     Button(
         onClick = onClick,
         modifier = Modifier
-            .width(300.dp)
+            .width(310.dp)
             .padding(6.dp)
             .height(45.dp),
         shape = RoundedCornerShape(8.dp),

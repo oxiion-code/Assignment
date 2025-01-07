@@ -14,13 +14,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.oxiion.campuscart_user.data.model.Address
+import com.oxiion.campuscart_user.data.model.User
 import com.oxiion.campuscart_user.ui.components.AppCustomWhiteButton
 import com.oxiion.campuscart_user.ui.components.AppCustomWhiteButtonSmall
 import com.oxiion.campuscart_user.ui.components.AppOutlinedTextBox
+import com.oxiion.campuscart_user.ui.components.LoadingDialogSmall
 import com.oxiion.campuscart_user.ui.components.ShowTextSelectionDialog
+import com.oxiion.campuscart_user.utils.DataState
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
-
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SignUpInfoScreen(
     paddingValues: PaddingValues,
@@ -37,10 +39,31 @@ fun SignUpInfoScreen(
     val showTextSelectionDialogCollege = remember { mutableStateOf(false) }
     val showTextSelectionDialogHostel = remember { mutableStateOf(false) }
 
+    // Observing state
+    val hostelListState by authViewModel.getHostelListState.collectAsState()
     val collegeList by authViewModel.collegeList.collectAsState()
     val hostelList by authViewModel.hostelList.collectAsState()
+    val userData by authViewModel.userData.collectAsState()
 
-    // State flows collected from ViewModel
+    fun validateInputs(): Boolean {
+        if (name.value.isBlank()) {
+            Toast.makeText(context, "Name cannot be empty", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (mobileNumber.value.isBlank()) {
+            Toast.makeText(context, "Mobile number cannot be empty", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (selectedCollege.value.isBlank()) {
+            Toast.makeText(context, "Please select a college", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (selectedHostel.value.isBlank()) {
+            Toast.makeText(context, "Please select a hostel", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
 
     Column(
         modifier = Modifier
@@ -81,45 +104,82 @@ fun SignUpInfoScreen(
             Spacer(modifier = Modifier.height(16.dp))
             AppCustomWhiteButtonSmall(
                 onClick = {
-                    authViewModel.getCollegeList()
                     showTextSelectionDialogCollege.value = true
                 },
                 text = selectedCollege.value.ifEmpty { "Select college" }
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             AppCustomWhiteButtonSmall(
                 onClick = {
                     if (selectedCollege.value.isNotEmpty()) {
-                        authViewModel.getHostelListIfNeeded(collegeName = selectedCollege.value)
+                        authViewModel.getHostelListIfNeeded(selectedCollege.value)
                         showTextSelectionDialogHostel.value = true
                     } else {
                         Toast.makeText(context, "Please select a college first", Toast.LENGTH_SHORT).show()
                     }
                 },
-                text = selectedHostel.value.ifEmpty { "Select hostel " }
+                text = selectedHostel.value.ifEmpty { "Select hostel" }
             )
+            Text("password:${userData.college}")
         }
         AppCustomWhiteButton(
             onClick = {
-                Toast.makeText(context, "Account Created Successfully", Toast.LENGTH_SHORT).show()
-                onSignUpSuccess()
+                if (validateInputs()) {
+                    val password=userData.college
+                    val user= User(
+                        address = userData.address?.let {
+                            Address(
+                                email = it.email,
+                                fullName = name.value,
+                                phoneNumber = mobileNumber.value,
+                                hostelNumber = selectedHostel.value
+                            )
+                        },
+                        college = selectedCollege.value,
+                    )
+                    onSignUpSuccess()
+                }
             },
             text = "Create Account",
         )
         Spacer(modifier = Modifier.height(16.dp))
+
+        // College Selection Dialog
         if (showTextSelectionDialogCollege.value) {
             ShowTextSelectionDialog(
                 showDialog = showTextSelectionDialogCollege,
                 selectedCollege = selectedCollege,
-                collageList = collegeList
+                collageList = collegeList,
+                onSelectionChange = { newCollege ->
+                    selectedHostel.value = "" // Clear selected hostel
+                    authViewModel.clearHostelList() // Clear existing hostel list
+                    authViewModel.getHostelListIfNeeded(newCollege) // Fetch new hostel list
+                }
             )
         }
+
+        // Hostel Selection Dialog
         if (showTextSelectionDialogHostel.value) {
             ShowTextSelectionDialog(
                 showDialog = showTextSelectionDialogHostel,
                 selectedCollege = selectedHostel,
-                collageList = hostelList
+                collageList = hostelList,
+                onSelectionChange = {}
             )
+        }
+
+        // Handle hostel list state
+        when (hostelListState) {
+            is DataState.Error -> {
+                Toast.makeText(context, "Unable to fetch hostels", Toast.LENGTH_SHORT).show()
+            }
+            DataState.Idle -> {
+
+            }
+            DataState.Loading -> {
+                LoadingDialogSmall(remember { mutableStateOf(true) })
+            }
+            is DataState.Success -> {}
         }
     }
 }
