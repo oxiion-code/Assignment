@@ -101,11 +101,11 @@ class AuthViewModel @Inject constructor(
             val result = repository.signup(user, password)
             result.fold(
                 onSuccess = { authResult ->
+                    _productList.value=authResult.products
                     // Save user UID and mark them logged in
                     SharedPreferencesManager.saveUid(context, authResult.uid)
-                    SharedPreferencesManager.saveCollege(context, user.college)
-                    SharedPreferencesManager.saveHostelNumber(context, user.address?.hostelNumber ?: "")
                     SharedPreferencesManager.saveLogOutState(context, false)  // User is not logged out
+                    fetchUserData(authResult.uid)
                     _signUpState.value = DataStateAuth.Success(authResult.products)
                 },
                 onFailure = { error ->
@@ -122,7 +122,7 @@ class AuthViewModel @Inject constructor(
             val result = repository.signin(email, password)
             result.fold(
                 onSuccess = { authResult ->
-                    fetchUserData(authResult.uid)
+                    _productList.value=authResult.products
                     // Save user UID and mark them logged in
                     SharedPreferencesManager.saveUid(context, authResult.uid)
                     SharedPreferencesManager.saveLogOutState(context, false)  // User is not logged out

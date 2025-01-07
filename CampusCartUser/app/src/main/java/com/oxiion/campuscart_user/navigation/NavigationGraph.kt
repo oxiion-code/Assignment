@@ -76,7 +76,9 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
             )
         }
         composable(Screens.Home.HomeScreen.route) {
-            HomeScreen()
+            HomeScreen(
+                authViewModel = authViewModel
+            )
         }
         composable(Screens.Cart.CartScreen.route) {
             // Implement CartScreen UI

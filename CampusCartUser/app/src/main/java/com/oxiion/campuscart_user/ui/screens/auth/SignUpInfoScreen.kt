@@ -19,9 +19,11 @@ import com.oxiion.campuscart_user.data.model.User
 import com.oxiion.campuscart_user.ui.components.AppCustomWhiteButton
 import com.oxiion.campuscart_user.ui.components.AppCustomWhiteButtonSmall
 import com.oxiion.campuscart_user.ui.components.AppOutlinedTextBox
+import com.oxiion.campuscart_user.ui.components.LoadingDialogFullScreen
 import com.oxiion.campuscart_user.ui.components.LoadingDialogSmall
 import com.oxiion.campuscart_user.ui.components.ShowTextSelectionDialog
 import com.oxiion.campuscart_user.utils.DataState
+import com.oxiion.campuscart_user.utils.DataStateAuth
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 @Composable
 fun SignUpInfoScreen(
@@ -38,12 +40,15 @@ fun SignUpInfoScreen(
     val selectedHostel = remember { mutableStateOf("") }
     val showTextSelectionDialogCollege = remember { mutableStateOf(false) }
     val showTextSelectionDialogHostel = remember { mutableStateOf(false) }
+    val isSignUpClick= remember { mutableStateOf(false) }
+    val isLoading= remember { mutableStateOf(false) }
 
     // Observing state
     val hostelListState by authViewModel.getHostelListState.collectAsState()
     val collegeList by authViewModel.collegeList.collectAsState()
     val hostelList by authViewModel.hostelList.collectAsState()
     val userData by authViewModel.userData.collectAsState()
+    val signUpState by authViewModel.signUpState.collectAsState()
 
     fun validateInputs(): Boolean {
         if (name.value.isBlank()) {
@@ -137,7 +142,8 @@ fun SignUpInfoScreen(
                         },
                         college = selectedCollege.value,
                     )
-                    onSignUpSuccess()
+                    isSignUpClick.value=true
+                    authViewModel.signUp(user = user,password= password)
                 }
             },
             text = "Create Account",
@@ -180,6 +186,27 @@ fun SignUpInfoScreen(
                 LoadingDialogSmall(remember { mutableStateOf(true) })
             }
             is DataState.Success -> {}
+        }
+        if (isSignUpClick.value){
+           when(signUpState){
+               is DataStateAuth.Error -> {
+                   isLoading.value=false
+                   Toast.makeText(context, (signUpState as DataStateAuth.Error).message, Toast.LENGTH_SHORT).show()
+                   isSignUpClick.value=false
+               }
+               DataStateAuth.Idle -> {
+
+               }
+               DataStateAuth.Loading -> {
+                   isLoading.value=true
+                   LoadingDialogFullScreen(isLoading)
+               }
+               is DataStateAuth.Success -> {
+                   isLoading.value=false
+                   onSignUpSuccess()
+                   isSignUpClick.value=false
+               }
+           }
         }
     }
 }

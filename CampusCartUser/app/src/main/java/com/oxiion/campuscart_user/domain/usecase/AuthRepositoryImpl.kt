@@ -24,7 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signup(user: User, password: String): Result<AuthResult> {
         return try {
             // Create a new user with email and password
-            user.address?.let { auth.createUserWithEmailAndPassword(it.email, password).await() }
+            auth.createUserWithEmailAndPassword(user.address!!.email, password).await()
             val userAdmin = auth.currentUser
 
             if (userAdmin != null) {
@@ -33,36 +33,26 @@ class AuthRepositoryImpl @Inject constructor(
 
                 // Fetch the product list
                 fetchProductList(
-                    user.college,
-                    user.address?.hostelNumber ?: ""
-                ).let { productListResult ->
-                    productListResult.fold(
-                        onSuccess = { products ->
-                            Result.success(AuthResult(uid = userAdmin.uid, products = products))
-                        },
-                        onFailure = { error ->
-                            Result.failure(error)
-                        }
-                    )
-                }
+                    college = user.college,
+                    hostelNumber = user.address!!.hostelNumber
+                ).fold(
+                    onSuccess = { products ->
+                        Result.success(AuthResult(uid = userAdmin.uid, products = products))
+                    },
+                    onFailure = { error ->
+                        Result.failure(error)
+                    }
+                )
             } else {
                 Log.e("Repository", "User registration succeeded but UID is null")
                 Result.failure(Exception("User registration succeeded but UID is null"))
             }
-        } catch (e: FirebaseAuthWeakPasswordException) {
-            Log.e("Repository", "Weak password: ${e.message}")
-            Result.failure(Exception("Password is too weak"))
-        } catch (e: FirebaseAuthInvalidCredentialsException) {
-            Log.e("Repository", "Invalid email: ${e.message}")
-            Result.failure(Exception("Invalid email format"))
-        } catch (e: FirebaseAuthUserCollisionException) {
-            Log.e("Repository", "Email already in use: ${e.message}")
-            Result.failure(Exception("This email is already in use"))
         } catch (e: Exception) {
             Log.e("Repository", "Sign-up failed: ${e.message}")
             Result.failure(e)
         }
     }
+
 
     override suspend fun signin(email: String, password: String): Result<AuthResult> {
         return try {
@@ -145,10 +135,10 @@ class AuthRepositoryImpl @Inject constructor(
         hostelNumber: String
     ): Result<List<Product>> {
         return try {
-            // Fetch the admin's collection data matching the college
-            val adminCollectionRef = firestore.collection("Admins")
+            // Query the Admins collection based on the college
+            val adminCollectionRef = firestore.collection("admins")
             val adminSnapshot = adminCollectionRef
-                .whereEqualTo("college", college)
+                .whereEqualTo("collagename", college)
                 .get()
                 .await()
 
@@ -156,9 +146,10 @@ class AuthRepositoryImpl @Inject constructor(
                 val adminDoc = adminSnapshot.documents.first()
                 val employeeList = adminDoc.get("employeeList") as? List<Map<String, Any>>
 
-                // Find the campus man matching the hostel number
-                val campusMan = employeeList?.find {
-                    (it["hostelNumber"] as? String) == hostelNumber
+                // Find the campus man where "address.hostelNumber" matches
+                val campusMan = employeeList?.find { employee ->
+                    val address = employee["address"] as? Map<String, Any>
+                    address?.get("hostelNumber") == hostelNumber
                 }
 
                 if (campusMan != null) {
@@ -193,6 +184,8 @@ class AuthRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+
 
     override suspend fun getCollageList(): Result<List<String>> {
         return try {

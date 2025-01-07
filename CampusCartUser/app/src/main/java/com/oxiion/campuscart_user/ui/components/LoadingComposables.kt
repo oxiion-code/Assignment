@@ -73,7 +73,7 @@ fun LoadingDialogFullScreen(isLoading: MutableState<Boolean>) {
         ) {
             Surface(
                 modifier = Modifier
-                    .fillMaxSize()
+                    . fillMaxWidth().height(100.dp)
                     .background(Color(0xFFFFFFFF)),
                 shape = RoundedCornerShape(8.dp),
                 color = Color(0xFFFFFFFF)
