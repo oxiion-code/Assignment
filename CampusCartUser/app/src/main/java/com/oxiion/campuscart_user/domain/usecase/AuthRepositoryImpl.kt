@@ -130,7 +130,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
 
-    private suspend fun fetchProductList(
+    override suspend fun fetchProductList(
         college: String,
         hostelNumber: String
     ): Result<List<Product>> {

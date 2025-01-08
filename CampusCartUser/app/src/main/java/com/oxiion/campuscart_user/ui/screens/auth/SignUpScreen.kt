@@ -36,6 +36,7 @@ fun SignUpScreen(
     val isPasswordVisible = remember { mutableStateOf(false) }
     val isReEnterPasswordVisible = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
+    val isLoadingSignIn = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
 
     val collegeListState by authViewModel.getCollegeListState.collectAsState()
@@ -164,3 +165,4 @@ fun SignUpScreen(
         }
     }
 }
+

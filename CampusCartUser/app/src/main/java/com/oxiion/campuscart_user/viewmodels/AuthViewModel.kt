@@ -140,20 +140,33 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchUserData(uid: String) {
+     fun fetchUserData(uid: String) {
         try {
-            // Fetch user data from Firestore using the UID
-            val userDoc = repository.getUserData(uid)  // Add this method in your repository
-            if (userDoc != null) {
-                _userData.value = userDoc
-                // Save the college and hostel information from the user data
-                SharedPreferencesManager.saveCollege(context, userDoc.college)
-                SharedPreferencesManager.saveHostelNumber(context, userDoc.address?.hostelNumber ?: "")
-            } else {
-                _signInState.value = DataStateAuth.Error("User data not found")
-            }
+           viewModelScope.launch {
+               // Fetch user data from Firestore using the UID
+               val userDoc = repository.getUserData(uid)  // Add this method in your repository
+               if (userDoc != null) {
+                   _userData.value = userDoc
+                   // Save the college and hostel information from the user data
+                   SharedPreferencesManager.saveCollege(context, userDoc.college)
+                   SharedPreferencesManager.saveHostelNumber(context, userDoc.address?.hostelNumber ?: "")
+               } else {
+                   _signInState.value = DataStateAuth.Error("User data not found")
+               }
+           }
         } catch (e: Exception) {
             _signInState.value = DataStateAuth.Error("Failed to fetch user data: ${e.message}")
+        }
+    }
+
+    fun fetchProductList(college:String,hostel:String){
+        viewModelScope.launch {
+            val result = repository.fetchProductList(college,hostel)
+            if (result.isSuccess) {
+                _productList.value = result.getOrNull()?: listOf()
+            } else {
+                _productList.value = listOf()
+            }
         }
     }
 
@@ -163,7 +176,9 @@ class AuthViewModel @Inject constructor(
         uid = SharedPreferencesManager.getUid(context)
         return !isLoggedOut && uid != null
     }
-
+    fun resetSignInState() {
+        _signInState.value = DataStateAuth.Idle
+    }
     // LogOut Functionality
     fun logOut() {
         viewModelScope.launch {

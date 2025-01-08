@@ -20,8 +20,10 @@ import androidx.compose.ui.unit.sp
 import com.oxiion.campuscart_user.ui.components.AppAlertBox
 import com.oxiion.campuscart_user.ui.components.AppCustomWhiteButton
 import com.oxiion.campuscart_user.ui.components.AppOutlinedTextBox
+import com.oxiion.campuscart_user.ui.components.LoadingDialogFullScreen
 import com.oxiion.campuscart_user.ui.components.LoadingDialogSmall
 import com.oxiion.campuscart_user.utils.DataState
+import com.oxiion.campuscart_user.utils.DataStateAuth
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 
 @Composable
@@ -34,6 +36,7 @@ fun SignInScreen(
 ) {
     var showExitDialog by remember { mutableStateOf(false) }
     val isLoading= remember { mutableStateOf(false) }
+    val isSignInSuccess= remember { mutableStateOf(false) }
     // BackHandler for handling back press
     BackHandler {
         showExitDialog = true
@@ -43,6 +46,7 @@ fun SignInScreen(
     val password = remember { mutableStateOf("") }
     val isPasswordVisible = remember { mutableStateOf(false) }
     val collegeListState by authViewModel.getCollegeListState.collectAsState()
+    val signInState by authViewModel.signInState.collectAsState()
     if (showExitDialog) {
         AppAlertBox(
             onConfirm = {
@@ -117,10 +121,32 @@ fun SignInScreen(
         }
         AppCustomWhiteButton(
             onClick = {
-
+                authViewModel.signIn(email = email.value, password = password.value)
             },
             text = "Sign In",
         )
         Spacer(modifier = Modifier.height(16.dp))
+        if (isSignInSuccess.value){
+            isSignInSuccess.value=false
+            onSignInSuccess()
+        }
+        when(signInState){
+            is DataStateAuth.Error -> {
+                isLoading.value=false
+               Toast.makeText(context, (signInState as DataStateAuth.Error).message,Toast.LENGTH_SHORT).show()
+            }
+            DataStateAuth.Idle -> {
+
+            }
+            DataStateAuth.Loading -> {
+                isLoading.value=true
+                LoadingDialogFullScreen(isLoading)
+            }
+            is DataStateAuth.Success -> {
+                isLoading.value=false
+                isSignInSuccess.value=true
+                authViewModel.resetSignInState()
+            }
+        }
     }
 }

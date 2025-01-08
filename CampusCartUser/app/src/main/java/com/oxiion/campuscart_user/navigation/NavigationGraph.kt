@@ -26,7 +26,7 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
                     navController.navigate(Screens.Auth.SignIn.route)
                 },
                 onNavigationToHome = {
-
+                    navController.navigate(Screens.Home.HomeScreen.route)
                 }
             )
         }
