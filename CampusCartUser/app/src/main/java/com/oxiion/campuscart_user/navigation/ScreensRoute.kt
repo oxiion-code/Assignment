@@ -17,7 +17,7 @@ sealed class Screens {
 
     // Home Screens
     sealed class Home(val route: String, val title: String) {
-        data object HomeScreen : Home(route = "home", title = "Home")
+        data object HomeScreen : Home( route = "home", title = "Home")
     }
 
     // Cart Screens
@@ -29,7 +29,6 @@ sealed class Screens {
     sealed class Orders(val route: String, val title: String) {
         data object OrdersScreen : Orders(route = "orders", title = "Orders")
     }
-
     // Profile Screens
     sealed class Profile(val route: String, val title: String) {
         data object ProfileScreen : Profile(route = "profile", title = "Profile")

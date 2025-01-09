@@ -101,4 +101,10 @@ dependencies {
     //Retrofit implementation
     implementation("com.squareup.retrofit2:retrofit:2.9.0")  // Retrofit library
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    //room set up
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 }

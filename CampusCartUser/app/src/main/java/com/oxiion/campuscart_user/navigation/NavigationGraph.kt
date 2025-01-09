@@ -12,7 +12,10 @@ import com.oxiion.campuscart_user.ui.screens.auth.ForgotPasswordScreen
 import com.oxiion.campuscart_user.ui.screens.auth.SignInScreen
 import com.oxiion.campuscart_user.ui.screens.auth.SignUpInfoScreen
 import com.oxiion.campuscart_user.ui.screens.auth.SignUpScreen
+import com.oxiion.campuscart_user.ui.screens.cart.CartScreen
 import com.oxiion.campuscart_user.ui.screens.home.HomeScreen
+import com.oxiion.campuscart_user.ui.screens.orders.OrdersScreen
+import com.oxiion.campuscart_user.ui.screens.profile.ProfileScreen
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 
 @Composable
@@ -77,17 +80,34 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
         }
         composable(Screens.Home.HomeScreen.route) {
             HomeScreen(
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                navigateToScreen = {
+                    navController.navigate(it)
+                },
+                navigateBack = {
+
+                }
             )
         }
         composable(Screens.Cart.CartScreen.route) {
-            // Implement CartScreen UI
+            CartScreen(
+              authViewModel =   authViewModel,
+                navigateToScreen = {
+                    navController.navigate(it)
+                },
+                navigateBack = {
+                    navController.popBackStack(Screens.Home.HomeScreen.route, inclusive = true)
+                    navController.navigate(Screens.Home.HomeScreen.route){
+                        popUpTo(Screens.Home.HomeScreen.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(Screens.Orders.OrdersScreen.route) {
-            // Implement OrdersScreen UI
+            OrdersScreen(paddingValues = paddingValues)
         }
         composable(Screens.Profile.ProfileScreen.route) {
-            // Implement ProfileScreen UI
+            ProfileScreen(paddingValues = paddingValues)
         }
     }
 }
