@@ -14,6 +14,8 @@ import androidx.navigation.compose.rememberNavController
 import com.oxiion.campuscart_user.navigation.StartAppNavigation
 import com.oxiion.campuscart_user.ui.screens.auth.SignInScreen
 import com.oxiion.campuscart_user.ui.theme.AppTheme
+import com.phonepe.intent.sdk.api.PhonePe
+import com.phonepe.intent.sdk.api.models.PhonePeEnvironment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,6 +23,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        PhonePe.init(this, PhonePeEnvironment.SANDBOX, Constants.MERCHANT_ID, "")
         setContent {
             AppTheme{
                 val navController= rememberNavController()

@@ -7,5 +7,6 @@ data class User(
     var profilePicture: String? = null,
     var address: Address? = null,
     var cart: List<Product> = listOf(),
-    var orders: List<Order> = listOf()
+    var orders: List<Order> = listOf(),
+    var walletMoney:Double=0.0
 )

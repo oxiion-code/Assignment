@@ -7,6 +7,7 @@ import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
@@ -22,18 +23,18 @@ data class CartItem(
     @ColumnInfo(name = "product_quantity") val quantity: Int,
     @ColumnInfo(name = "product_rating") val rating: Double,
     @ColumnInfo(name = "product_is_available") val isAvailable: Boolean,
-    @ColumnInfo(name = "product_discount") val discount: Double?,
+    @ColumnInfo(name = "product_discount_price") val discountedPrice: Double?,
     @ColumnInfo(name = "product_description") val description: String,
     @ColumnInfo(name = "product_price") val price: Double,
     @ColumnInfo(name = "product_image") val image: String,
-    @ColumnInfo(name = "total_price") val totalPrice: Double
+    @ColumnInfo(name = "total_price") val totalPrice:Double
 )
 
 
 @Dao
 interface CartDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addToCart(cartItem: CartItem)
 
     @Update
@@ -42,17 +43,23 @@ interface CartDao {
     @Delete
     suspend fun removeFromCart(cartItem: CartItem)
 
+    @Query("SELECT * FROM cart WHERE product_id = :productId LIMIT 1")
+    suspend fun findCartItemByProductId(productId: String): CartItem?
+
     @Query("SELECT * FROM cart")
     suspend fun getAllCartItems(): List<CartItem>
 
-    @Query("SELECT SUM(total_price) FROM cart")
+    @Query("SELECT SUM(product_quantity * product_price) FROM cart")
     suspend fun getTotalPrice(): Double
+
+    @Query("SELECT SUM(product_quantity * product_discount_price) FROM cart")
+    suspend fun getTotalDiscountedPrice(): Double
 
     @Query("DELETE FROM cart")
     suspend fun clearCart()
 }
 
-@Database(entities = [CartItem::class], version = 2, exportSchema = true)
+@Database(entities = [CartItem::class], version = 3, exportSchema = true)
 abstract class CartDatabase : RoomDatabase() {
 
     abstract fun cartDao(): CartDao
@@ -68,7 +75,7 @@ abstract class CartDatabase : RoomDatabase() {
                     CartDatabase::class.java,
                     "cart_database"
                 )
-                    .fallbackToDestructiveMigration() // Automatically handle migrations by destroying and recreating the database
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance
@@ -76,5 +83,6 @@ abstract class CartDatabase : RoomDatabase() {
         }
     }
 }
+
 
 

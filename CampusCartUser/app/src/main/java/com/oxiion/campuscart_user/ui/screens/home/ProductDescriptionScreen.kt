@@ -30,9 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.oxiion.campuscart_user.data.model.Product
+import com.oxiion.campuscart_user.viewmodels.CartViewModel
 
 @Composable
-fun ProductDetailsScreen(product: Product, onAddToCart: () -> Unit) {
+fun ProductDetailsScreen(
+    product: Product,
+    onAddToCart: (Product) -> Unit
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,10 +50,11 @@ fun ProductDetailsScreen(product: Product, onAddToCart: () -> Unit) {
                 // Product Name
                 Text(
                     text = product.name,
-                    fontSize = 22.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2, // Limit to 2 lines
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -93,9 +98,10 @@ fun ProductDetailsScreen(product: Product, onAddToCart: () -> Unit) {
                 // Product Category
                 Text(
                     text = product.category,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     modifier = Modifier.padding(top = 8.dp),
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -112,10 +118,11 @@ fun ProductDetailsScreen(product: Product, onAddToCart: () -> Unit) {
                    ) // Light grey background color
                 ) {
                     Text(
-                        text = "The perfect companion for students and professionals alike, this premium-quality assignment copy offers a seamless writing experience with its smooth 70 GSM paper that prevents ink bleeding and ensures clean, crisp notes every time. Its sturdy binding guarantees durability, allowing you to flip through pages effortlessly without worrying about tearing or loose sheets. Designed for practicality, this copy includes a convenient margin for annotations and a user-friendly index at the front, making it ideal for organizing projects, assignments, or lecture notes. The eco-friendly cover features a sleek, modern design and is made from recycled materials, reflecting your commitment to sustainability. Whether you’re preparing detailed reports, brainstorming creative ideas, or jotting down quick calculations, this assignment copy is a must-have for anyone who values quality and organization. With 200 ruled pages, it’s perfect for extended use, ensuring you never run out of space when inspiration strikes!",
+                        text = product.description,
                         fontSize = 16.sp,
                         maxLines = 4, // Limit to 3 lines
                         overflow = TextOverflow.Ellipsis,
+                        color =Color.Black ,
                         modifier = Modifier.padding(16.dp) // Padding inside the card
                     )
                 }
@@ -133,7 +140,7 @@ fun ProductDetailsScreen(product: Product, onAddToCart: () -> Unit) {
         Spacer(Modifier.height(8.dp))
         // Add to Cart Button
         Button(
-            onClick = { onAddToCart() },
+            onClick = { onAddToCart(product) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),

@@ -1,6 +1,7 @@
 package com.oxiion.campuscart_user.ui.screens.home
 
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -34,22 +36,31 @@ import com.oxiion.campuscart_user.data.model.User
 import com.oxiion.campuscart_user.navigation.Screens
 import com.oxiion.campuscart_user.ui.components.AppBottomBar
 import com.oxiion.campuscart_user.ui.components.AppTopBar
+import com.oxiion.campuscart_user.ui.components.LoadingDialogTransParent
+import com.oxiion.campuscart_user.utils.DataState
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
+import com.oxiion.campuscart_user.viewmodels.CartViewModel
+
 @Composable
 fun HomeScreen(
     authViewModel: AuthViewModel,
+    cartViewModel: CartViewModel,
     navigateToScreen: (route: String) -> Unit,
     navigateBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val productList by authViewModel.productList.collectAsState()
     val userData by authViewModel.userData.collectAsState()
     var currentScreen by remember { mutableStateOf<ScreenState>(ScreenState.ProductList) }
     var isHomeScreen by remember{ mutableStateOf(true) }
+    val isAddToCart = remember{ mutableStateOf(false) }
+    val addToCartState by cartViewModel.addToCartState.collectAsState()
     BackHandler {
         if (currentScreen is ScreenState.ProductDetails) {
             currentScreen = ScreenState.ProductList
             isHomeScreen=true
         } else {
+            isHomeScreen=false
             navigateBack()
         }
     }
@@ -65,6 +76,7 @@ fun HomeScreen(
                     isHomeScreen = isHomeScreen,
                     onBackClick = {
                         if (currentScreen is ScreenState.ProductDetails) {
+                            isHomeScreen=true
                             currentScreen = ScreenState.ProductList
                         } else {
                             navigateBack()
@@ -99,10 +111,39 @@ fun HomeScreen(
                 )
                 is ScreenState.ProductDetails -> ProductDetailsScreen(
                     product = screen.product,
-                    onAddToCart = {
+                    onAddToCart = {product->
+                        cartViewModel.findCartItemByProductId(
+                           productId =  product.id,
+                            onResult = {result->
+                                if (result==null){
+                                    cartViewModel.addToCart(product,1)
+                                }else{
+                                    Toast.makeText(context,"Already added to cart",Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
 
-                    }
+                    },
                 )
+            }
+        }
+        when(addToCartState){
+            is DataState.Error -> {
+                isAddToCart.value=false
+                Toast.makeText(context, (addToCartState as DataState.Error).message,Toast.LENGTH_SHORT).show()
+                cartViewModel.resetAddToCartState()
+            }
+            DataState.Idle -> {
+
+            }
+            DataState.Loading -> {
+                isAddToCart.value=true
+                LoadingDialogTransParent(isAddToCart)
+            }
+            DataState.Success -> {
+                isAddToCart.value=false
+                Toast.makeText(context, "Product is added to cart",Toast.LENGTH_LONG).show()
+                cartViewModel.resetAddToCartState()
             }
         }
     }
@@ -115,12 +156,17 @@ fun ProductList(
     onProductClick: (Product) -> Unit
 ) {
     Text(
-        text = "Welcome, ${userData.address?.fullName ?: "Guest"}!",
+        text = "Welcome, ${
+            userData.address?.fullName?.let { fullName ->
+                if (fullName.contains(" ")) fullName.substringBefore(" ") else fullName
+            } ?: "Bro"
+        }!",
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         fontSize = 16.sp,
         fontWeight = FontWeight.SemiBold,
         color = Color(0xFF001E30)
     )
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),

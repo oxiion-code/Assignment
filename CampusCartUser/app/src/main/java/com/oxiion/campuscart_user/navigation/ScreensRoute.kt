@@ -24,7 +24,10 @@ sealed class Screens {
     sealed class Cart(val route: String, val title: String) {
         data object CartScreen : Cart(route = "cart", title = "Cart")
     }
-
+    sealed class Payment(val route: String, val title: String) {
+        data object PaymentScreen : Payment(route = "payment", title = "Payment")
+        data object PaymentSuccessScreen : Payment(route = "paymentSuccess", title = "Payment Success")
+    }
     // Orders Screens
     sealed class Orders(val route: String, val title: String) {
         data object OrdersScreen : Orders(route = "orders", title = "Orders")

@@ -54,7 +54,7 @@ fun LoadingDialogSmall(isLoading: MutableState<Boolean>) {
                         Text(
                             text = "Loading...",
                             color = Color.White,
-                            fontSize = 24.sp,
+                            fontSize = 18.sp,
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -73,7 +73,7 @@ fun LoadingDialogFullScreen(isLoading: MutableState<Boolean>) {
         ) {
             Surface(
                 modifier = Modifier
-                    . fillMaxWidth().height(100.dp)
+                    . fillMaxWidth().height(60.dp)
                     .background(Color(0xFFFFFFFF)),
                 shape = RoundedCornerShape(8.dp),
                 color = Color(0xFFFFFFFF)
@@ -87,7 +87,45 @@ fun LoadingDialogFullScreen(isLoading: MutableState<Boolean>) {
                     ) {
                         CircularProgressIndicator(
                             color = Color(0xFF29638A),
-                            modifier = Modifier.size(60.dp)
+                            modifier = Modifier.size(30.dp)
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(
+                            text = "Loading...",
+                            color = Color(0xFF29638A),
+                            fontSize = 28.sp,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun LoadingDialogTransParent(isLoading: MutableState<Boolean>) {
+    if (isLoading.value) {
+        Dialog(
+            onDismissRequest = {}
+        ) {
+            Surface(
+                modifier = Modifier
+                    . fillMaxWidth().height(60.dp)
+                    .background(Color.Transparent),
+                shape = RoundedCornerShape(8.dp),
+                color = Color(0xFFFFFFFF)
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = Color(0xFF29638A),
+                            modifier = Modifier.size(30.dp)
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(

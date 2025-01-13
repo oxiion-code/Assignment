@@ -85,14 +85,14 @@ fun BottomBarIcon(
             Icon(
                 imageVector = icon,
                 contentDescription = screen,
-                tint = if (currentScreen == screen) Color(0xFF29638A) else Color.White,
+                tint = if (currentScreen == screen) Color(0xFF97CCF8) else Color.White,
                 modifier = Modifier.size(24.dp)
             )
         } else if (iconPainter != null) {
             Icon(
                 painter = iconPainter,
                 contentDescription = screen,
-                tint = if (currentScreen == screen) Color(0xFF29638A) else Color.White,
+                tint = if (currentScreen == screen) Color(0xFF97CCF8) else Color.White,
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -106,7 +106,7 @@ fun BottomBarIcon(
                 else -> ""
             },
             fontSize = 12.sp,
-            color = if (currentScreen == screen) Color(0xFF29638A) else Color.White,
+            color = if (currentScreen == screen) Color(0xFF97CCF8) else Color.White,
             modifier = Modifier.padding(top = 4.dp)
         )
     }

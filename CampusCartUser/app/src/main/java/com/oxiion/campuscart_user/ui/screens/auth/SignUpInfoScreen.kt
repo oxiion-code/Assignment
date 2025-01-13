@@ -141,6 +141,7 @@ fun SignUpInfoScreen(
                             )
                         },
                         college = selectedCollege.value,
+                        walletMoney = 0.0
                     )
                     isSignUpClick.value=true
                     authViewModel.signUp(user = user,password= password)
