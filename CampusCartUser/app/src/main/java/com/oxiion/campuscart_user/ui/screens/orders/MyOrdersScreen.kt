@@ -1,5 +1,6 @@
 package com.oxiion.campuscart_user.ui.screens.orders
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,8 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -37,12 +40,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.oxiion.campuscart_user.data.model.Order
-import com.oxiion.campuscart_user.data.model.Product
 import com.oxiion.campuscart_user.navigation.Screens
 import com.oxiion.campuscart_user.ui.components.AppBottomBar
 import com.oxiion.campuscart_user.ui.components.AppTopBar
+import com.oxiion.campuscart_user.ui.components.LoadingDialogTransparent
 import com.oxiion.campuscart_user.ui.screens.home.ScreenState
+import com.oxiion.campuscart_user.utils.DataState
 import com.oxiion.campuscart_user.utils.SharedPreferencesManager
+import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 import com.oxiion.campuscart_user.viewmodels.OrderViewModel
 
 sealed class ScreenStateOrders {
@@ -52,6 +57,7 @@ sealed class ScreenStateOrders {
 
 @Composable
 fun OrdersScreen(
+    authViewModel: AuthViewModel,
     orderViewModel: OrderViewModel,
     navigateBack: () -> Unit,
     onNavigateToScreen: (String) -> Unit
@@ -60,22 +66,28 @@ fun OrdersScreen(
         orderViewModel.getOrders()
     }
     val context = LocalContext.current
-    val hostelNumber = SharedPreferencesManager.getHostelNumber(context)
+    val hostelNumber = SharedPreferencesManager.getHostelNumber(context) ?: "Hostel"
+    val uid = SharedPreferencesManager.getUid(context) ?: return
     var currentScreen by remember { mutableStateOf<ScreenStateOrders>(ScreenStateOrders.OrdersList) }
     val ordersList by orderViewModel.ordersList.collectAsState()
+    val getOrdersState by orderViewModel.getOrdersState.collectAsState()
+    val isLoading = remember { mutableStateOf(false) }
+
     BackHandler {
-        if (currentScreen is ScreenStateOrders.OrderDetails){
+        if (currentScreen is ScreenStateOrders.OrderDetails) {
             currentScreen = ScreenStateOrders.OrdersList
-        }else{
+        } else {
             navigateBack()
         }
     }
-    Scaffold(modifier = Modifier.fillMaxSize(),
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
                 title = "My Orders",
                 isHomeScreen = false,
-                hostelName = hostelNumber!!,
+                hostelName = hostelNumber,
                 onBackClick = {
                     if (currentScreen is ScreenStateOrders.OrderDetails) {
                         currentScreen = ScreenStateOrders.OrdersList
@@ -84,50 +96,83 @@ fun OrdersScreen(
                     }
                 }
             )
-        }, bottomBar = {
+        },
+        bottomBar = {
             AppBottomBar(
                 currentScreen = Screens.Orders.OrdersScreen.route,
-                onNavigate = { route ->
-                    onNavigateToScreen(route)
-                }
+                onNavigate = { route -> onNavigateToScreen(route) }
             )
-        }) { paddingValues ->
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(Color.White)
         ) {
-            when(val screen =currentScreen){
+            when (val screen = currentScreen) {
                 is ScreenStateOrders.OrderDetails -> {
                     OrderDetailsScreen(
-                       order = screen.order,
-                        onCancelOrderClick = {
-
+                        orderViewModel = orderViewModel,
+                        order = screen.order,
+                        onCancelOrderClick = { order ->
+                            orderViewModel.cancelOrder(order)
+                        },
+                        navigateBack = {
+                            authViewModel.fetchUserData(uid)
+                            orderViewModel.getOrders()
+                            currentScreen = ScreenStateOrders.OrdersList
                         }
                     )
                 }
                 ScreenStateOrders.OrdersList -> {
-                    if (ordersList==null){
-                        Text("No orders found")
-                    }else{
-                        OrdersListScreen(orders = ordersList!!,
-                            onOrderCardClick = {order->
-                                currentScreen=ScreenStateOrders.OrderDetails(order)
-                            })
+                    if (ordersList.isNullOrEmpty()) {
+                        Text(
+                            text = "No orders found",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize(Alignment.Center),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Gray
+                        )
+                    } else {
+                        OrdersListScreen(
+                            orders = ordersList!!,
+                            onOrderCardClick = { order -> currentScreen = ScreenStateOrders.OrderDetails(order) }
+                        )
                     }
-
                 }
             }
-
         }
+
+        // Handle Loading State
+        when (getOrdersState) {
+            is DataState.Loading -> {
+                isLoading.value = true
+            }
+            is DataState.Error -> {
+                isLoading.value = false
+                Toast.makeText(context, (getOrdersState as DataState.Error).message, Toast.LENGTH_SHORT).show()
+            }
+            is DataState.Success -> {
+                isLoading.value = false
+            }
+            else -> Unit
+        }
+    }
+
+    // Show Loading Dialog
+    if (isLoading.value) {
+        LoadingDialogTransparent(isLoading)
     }
 }
 
+
 @Composable
 fun OrdersListScreen(
-    orders:List<Order>,
-    onOrderCardClick: (Order) -> Unit){
+    orders: List<Order>,
+    onOrderCardClick: (Order) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -150,7 +195,6 @@ fun OrderCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
@@ -172,7 +216,7 @@ fun OrderCard(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(80.dp,100.dp)
                     .background(Color.White)
             ) {
                 val painter = rememberAsyncImagePainter(order.items[0].image)
@@ -180,7 +224,7 @@ fun OrderCard(
                     painter = painter,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(110.dp)
+                    modifier = Modifier.size(70.dp,80.dp)
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -193,7 +237,7 @@ fun OrderCard(
                     color = Color.DarkGray
                 )
                 Text(
-                    text = order.confirmationCode,
+                    text = "Code:${order.confirmationCode}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.DarkGray
                 )
@@ -202,27 +246,25 @@ fun OrderCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.DarkGray
                 )
-                var color: Color = Color(0xFFFFDAD6)
-                if (order.status.isDelivered) {
-                    color = Color(0xFFC7F6C7)
-                } else if (
-                    order.status.isOnProgress
-                ) {
-                    color =Color.LightGray
+                val (color, showText) = when {
+                    order.status.isDelivered -> Pair(Color(0xFFC7F6C7), "Delivered")
+                    order.status.isCancelled -> Pair(Color(0xFFFFDAD6), "Cancelled")
+                    order.status.isOnProgress -> Pair(Color.LightGray, "In Progress")
+                    else -> Pair(Color(0xFFEAEAEA), "Unknown") // Default fallback case
                 }
                 Card(
-                    modifier = Modifier.padding(2.dp), colors = CardDefaults.cardColors(
+                    modifier = Modifier.padding(top = 4.dp), colors = CardDefaults.cardColors(
                         containerColor = color
-                    )
+                    ),
+                    shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(
-                        text = "Status: ${order.status}",
+                        text = showText,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Black,
-                        modifier = Modifier.padding(2.dp)
+                        modifier = Modifier.padding(4.dp)
                     )
                 }
-
             }
         }
     }

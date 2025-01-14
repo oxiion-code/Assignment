@@ -35,6 +35,7 @@ import com.oxiion.campuscart_user.Constants
 import com.oxiion.campuscart_user.R
 import com.oxiion.campuscart_user.ui.components.LoadingDialogSmall
 import com.oxiion.campuscart_user.utils.DataState
+import com.oxiion.campuscart_user.utils.SharedPreferencesManager
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 import com.oxiion.campuscart_user.viewmodels.CartViewModel
 import com.oxiion.campuscart_user.viewmodels.OrderViewModel
@@ -72,8 +73,10 @@ fun PaymentScreen(
     val walletMoney = userData.walletMoney.takeIf { it > 0 } ?: 0.0
     val walletDeduction = if (useWalletMoney) minOf(totalAmount, walletMoney) else 0.0
     val payableAmount = totalAmount - walletDeduction
-
-
+    val userUid=SharedPreferencesManager.getUid(context)
+    LaunchedEffect(Unit) {
+        authViewModel.fetchUserData(userUid!!)
+    }
     // PhonePe Launcher
     val phonePeLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -90,6 +93,7 @@ fun PaymentScreen(
         if (paymentVerificationStatus == true) {
             orderViewModel.createOrder(products = cartItems, totalPrice = totalAmount, "")
             Toast.makeText(context, "Payment successful!", Toast.LENGTH_SHORT).show()
+            paymentViewModel.resetPaymentStatus()
         } else {
             Toast.makeText(context, "Payment failed or not verified!", Toast.LENGTH_SHORT).show()
         }

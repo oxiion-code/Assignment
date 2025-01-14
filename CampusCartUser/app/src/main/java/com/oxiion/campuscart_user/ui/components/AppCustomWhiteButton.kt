@@ -55,3 +55,23 @@ fun AppCustomWhiteButtonSmall(onClick: () -> Unit, text: String) {
         )
     }
 }
+@Composable
+fun AppCustomBlueButton(onClick: () -> Unit, text: String) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(6.dp)
+            .height(45.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF29638A),
+            contentColor = Color.White
+        )
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleMedium,
+        )
+    }
+}

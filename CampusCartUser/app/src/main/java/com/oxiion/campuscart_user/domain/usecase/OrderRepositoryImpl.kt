@@ -124,11 +124,6 @@ class OrderRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
-
-    override suspend fun deleteOTP(otp: String): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getOrders(): Result<List<Order>> {
         return try {
             val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not logged in"))
@@ -159,31 +154,79 @@ class OrderRepositoryImpl @Inject constructor(
         }
     }
 
-
     override suspend fun cancelOrder(order: Order): Result<Boolean> {
         return try {
             val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not logged in"))
+            Log.d("cancelOrder", "User ID: $userId, Order ID: ${order.id}")
+            val college=SharedPreferencesManager.getCollege(context)
+
+            // Fetch the admin query snapshot outside the transaction
+            val adminQuerySnapshot = firestore.collection("admins")
+                .whereEqualTo("collagename",college) // Use collegeName from the order
+                .get()
+                .await()
+            Log.d("cancelOrder", "Admin query snapshot size: ${adminQuerySnapshot.size()}")
 
             firestore.runTransaction { transaction ->
-                // Reference to the user document
+                // Step 1: Update the user's wallet
                 val userDocRef = firestore.collection("Users").document(userId)
-
-                // Get the user's current wallet money
                 val userSnapshot = transaction.get(userDocRef)
                 val currentWalletMoney = userSnapshot.getDouble("walletMoney") ?: 0.0
-
-                // Add the order's totalAmount to the wallet money
                 val updatedWalletMoney = currentWalletMoney + order.totalPrice
+                Log.d("cancelOrder", "Current wallet money: $currentWalletMoney, Updated wallet money: $updatedWalletMoney")
                 transaction.update(userDocRef, "walletMoney", updatedWalletMoney)
 
-                // Reference to the order document in the orders subcollection
+                // Step 2: Delete the user's order
                 val orderDocRef = userDocRef.collection("orders").document(order.id)
-
-                // Delete the order document
                 transaction.delete(orderDocRef)
+                Log.d("cancelOrder", "Deleted order ${order.id} from user's orders collection")
+
+                // Step 3: Remove the order from the employee's orders list
+                for (adminDoc in adminQuerySnapshot.documents) {
+                    val employeeList = adminDoc.get("employeeList") as? List<Map<String, Any>> ?: emptyList()
+                    Log.d("cancelOrder", "Admin Doc ID: ${adminDoc.id}, Employee list size: ${employeeList.size}")
+
+                    val updatedEmployeeList = employeeList.map { employee ->
+                        val addressMap = employee["address"] as? Map<String, Any>
+                        if (addressMap != null && addressMap["hostelNumber"] == order.address.hostelNumber) {
+                            Log.d("cancelOrder", "Matching employee found with hostelNumber: ${order.address.hostelNumber}")
+
+                            val employeeOrders = (employee["orders"] as? List<Map<String, Any>> ?: emptyList()).toMutableList()
+                            Log.d("cancelOrder", "Employee orders size before removal: ${employeeOrders.size}")
+
+                            // Remove the matching order from the employee's orders
+                            val updatedOrders = employeeOrders.filterNot { it["id"] == order.id }
+                            Log.d("cancelOrder", "Employee orders size after removal: ${updatedOrders.size}")
+
+                            // Return the updated employee map
+                            employee.toMutableMap().apply {
+                                put("orders", updatedOrders)
+                            }
+                        } else {
+                            employee
+                        }
+                    }
+
+                    // Update the admin document with the modified employee list
+                    transaction.update(adminDoc.reference, "employeeList", updatedEmployeeList)
+                    Log.d("cancelOrder", "Updated employee list for admin doc: ${adminDoc.id}")
+                }
             }.await()
 
-            Log.d("cancelOrder", "Order cancelled successfully and wallet money updated")
+            // Step 4: Delete OTP document
+            val otpQuerySnapshot = firestore.collection("Otp")
+                .whereEqualTo("otp", order.confirmationCode)
+                .whereEqualTo("orderId", order.id)
+                .get()
+                .await()
+            Log.d("cancelOrder", "OTP query snapshot size: ${otpQuerySnapshot.size()}")
+
+            for (otpDoc in otpQuerySnapshot.documents) {
+                otpDoc.reference.delete().await()
+                Log.d("cancelOrder", "Deleted OTP document: ${otpDoc.id}")
+            }
+
+            Log.d("cancelOrder", "Order cancelled successfully, wallet money updated, and employee orders updated")
             Result.success(true)
         } catch (e: Exception) {
             Log.e("cancelOrder", "Error cancelling order: ${e.message}", e)
@@ -191,11 +234,14 @@ class OrderRepositoryImpl @Inject constructor(
         }
     }
 
+
+
+
+
     override suspend fun deductWalletMoneyForPayment(amountToPay: Double): Result<Double> {
         if (amountToPay <= 0.0) {
             return Result.failure(Exception("Amount to pay must be greater than 0"))
         }
-
         return try {
             val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not logged in"))
 

@@ -35,7 +35,7 @@ fun CartScreen(
     cartViewModel: CartViewModel,
     authViewModel: AuthViewModel,
     navigateToScreen: (String) -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
 ) {
     val userData by authViewModel.userData.collectAsState()
     val cartItems by cartViewModel.cartItems.collectAsState()
@@ -65,7 +65,7 @@ fun CartScreen(
         bottomBar = {
             AppBottomBar(
                 currentScreen = Screens.Cart.CartScreen.route,
-                onNavigate = navigateToScreen
+                onNavigate=navigateToScreen
             )
         }
     ) { padding ->
@@ -118,7 +118,9 @@ fun CartScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        onClick = { navigateToScreen(Screens.Payment.PaymentScreen.route) },
+                        onClick = {
+                            navigateToScreen(Screens.Payment.PaymentScreen.route)
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp),
                         enabled = totalPrice > 0.0,

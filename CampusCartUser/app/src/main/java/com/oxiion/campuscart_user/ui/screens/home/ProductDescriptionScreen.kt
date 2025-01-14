@@ -1,5 +1,6 @@
 package com.oxiion.campuscart_user.ui.screens.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,9 +35,13 @@ import com.oxiion.campuscart_user.viewmodels.CartViewModel
 
 @Composable
 fun ProductDetailsScreen(
+    navigateBack:()->Unit,
     product: Product,
     onAddToCart: (Product) -> Unit
     ) {
+    BackHandler {
+        navigateBack()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()

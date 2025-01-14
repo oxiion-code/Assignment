@@ -102,8 +102,11 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
         composable(Screens.Cart.CartScreen.route) {
             CartScreen(
                 authViewModel = authViewModel,
-                navigateToScreen = {
-                    navController.navigate(it)
+                navigateToScreen = {route->
+                    navController.popBackStack(route, inclusive = true)
+                    navController.navigate(route){
+                        popUpTo(route) { inclusive = true }
+                    }
                 },
                 navigateBack = {
                     navController.popBackStack(Screens.Home.HomeScreen.route, inclusive = true)
@@ -147,7 +150,10 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
         composable(Screens.Orders.OrdersScreen.route) {
             OrdersScreen(
               onNavigateToScreen = {
-                  navController.navigate(it)
+                  navController.popBackStack(it, inclusive = true)
+                  navController.navigate(it){
+                      popUpTo(it) { inclusive = true }
+                  }
               },
                 navigateBack = {
                     navController.popBackStack(Screens.Home.HomeScreen.route, inclusive = true)
@@ -155,7 +161,8 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
                         popUpTo(Screens.Home.HomeScreen.route) { inclusive = true }
                     }
                 },
-                orderViewModel = orderViewModel
+                orderViewModel = orderViewModel,
+                authViewModel = authViewModel
                 )
         }
         composable(Screens.Profile.ProfileScreen.route) {

@@ -9,6 +9,5 @@ interface OrderRepository{
     suspend fun getOrders(): Result<List<Order>>
     suspend fun cancelOrder(order: Order):Result<Boolean>
     suspend fun generateOTP(orderId:String): Result<String>
-    suspend fun deleteOTP(otp: String): Result<Boolean>
     suspend fun deductWalletMoneyForPayment(amountToPay: Double): Result<Double>
 }

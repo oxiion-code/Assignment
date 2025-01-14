@@ -104,39 +104,21 @@ fun LoadingDialogFullScreen(isLoading: MutableState<Boolean>) {
     }
 }
 @Composable
-fun LoadingDialogTransParent(isLoading: MutableState<Boolean>) {
+fun LoadingDialogTransparent(isLoading: MutableState<Boolean>) {
     if (isLoading.value) {
         Dialog(
             onDismissRequest = {}
         ) {
-            Surface(
+            Box(
                 modifier = Modifier
-                    . fillMaxWidth().height(60.dp)
+                    .size(80.dp)
                     .background(Color.Transparent),
-                shape = RoundedCornerShape(8.dp),
-                color = Color(0xFFFFFFFF)
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = Color(0xFF29638A),
-                            modifier = Modifier.size(30.dp)
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Text(
-                            text = "Loading...",
-                            color = Color(0xFF29638A),
-                            fontSize = 28.sp,
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
+                CircularProgressIndicator(
+                    color = Color(0xFF29638A),
+                    modifier = Modifier.size(50.dp)
+                )
             }
         }
     }

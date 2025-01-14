@@ -36,7 +36,8 @@ import com.oxiion.campuscart_user.data.model.User
 import com.oxiion.campuscart_user.navigation.Screens
 import com.oxiion.campuscart_user.ui.components.AppBottomBar
 import com.oxiion.campuscart_user.ui.components.AppTopBar
-import com.oxiion.campuscart_user.ui.components.LoadingDialogTransParent
+import com.oxiion.campuscart_user.ui.components.LoadingDialogTransparent
+
 import com.oxiion.campuscart_user.utils.DataState
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 import com.oxiion.campuscart_user.viewmodels.CartViewModel
@@ -110,6 +111,7 @@ fun HomeScreen(
                     }
                 )
                 is ScreenState.ProductDetails -> ProductDetailsScreen(
+                    navigateBack=navigateBack,
                     product = screen.product,
                     onAddToCart = {product->
                         cartViewModel.findCartItemByProductId(
@@ -138,11 +140,11 @@ fun HomeScreen(
             }
             DataState.Loading -> {
                 isAddToCart.value=true
-                LoadingDialogTransParent(isAddToCart)
+                LoadingDialogTransparent(isAddToCart)
             }
             DataState.Success -> {
                 isAddToCart.value=false
-                Toast.makeText(context, "Product is added to cart",Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Product is added to cart",Toast.LENGTH_SHORT).show()
                 cartViewModel.resetAddToCartState()
             }
         }
@@ -198,9 +200,6 @@ sealed class ScreenState {
    data  object ProductList : ScreenState()
     data class ProductDetails(val product: Product) : ScreenState()
 }
-
-
-
 
 @Composable
 fun ProductCard(

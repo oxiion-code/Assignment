@@ -57,7 +57,7 @@ fun PaymentSuccessScreen(
         },
         bottomBar = {
             AppBottomBar(
-                currentScreen = Screens.Payment.PaymentSuccessScreen.route,
+                currentScreen = Screens.Orders.OrdersScreen.route,
                 onNavigate = { route ->
                     onNavigateToScreen(route)
                 }
