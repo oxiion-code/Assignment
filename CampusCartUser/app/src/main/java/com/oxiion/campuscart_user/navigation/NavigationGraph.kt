@@ -16,7 +16,6 @@ import com.oxiion.campuscart_user.ui.screens.auth.SignUpScreen
 import com.oxiion.campuscart_user.ui.screens.cart.CartScreen
 import com.oxiion.campuscart_user.ui.screens.home.HomeScreen
 import com.oxiion.campuscart_user.ui.screens.orders.OrdersScreen
-import com.oxiion.campuscart_user.ui.screens.payment.PaymentSuccessScreen
 import com.oxiion.campuscart_user.ui.screens.profile.ProfileScreen
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 import com.oxiion.campuscart_user.viewmodels.CartViewModel
@@ -102,9 +101,9 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
         composable(Screens.Cart.CartScreen.route) {
             CartScreen(
                 authViewModel = authViewModel,
-                navigateToScreen = {route->
+                navigateToScreen = { route ->
                     navController.popBackStack(route, inclusive = true)
-                    navController.navigate(route){
+                    navController.navigate(route) {
                         popUpTo(route) { inclusive = true }
                     }
                 },
@@ -123,38 +122,21 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
                 paddingValues = paddingValues,
                 cartViewModel = cartViewModel,
                 orderViewModel = orderViewModel,
-                onPaymentSuccess = {
-                    navController.navigate(Screens.Payment.PaymentSuccessScreen.route) {
-                        popUpTo(Screens.Payment.PaymentScreen.route) { inclusive = true }
-                    }
-                })
-        }
-        composable(Screens.Payment.PaymentSuccessScreen.route) {
-            PaymentSuccessScreen(
-                orderViewModel = orderViewModel,
-                cartViewModel = cartViewModel,
-                onBackClick = {
+                onNavigationBack = {
                     navController.popBackStack(Screens.Home.HomeScreen.route, inclusive = true)
                     navController.navigate(Screens.Home.HomeScreen.route) {
                         popUpTo(Screens.Home.HomeScreen.route) { inclusive = true }
                     }
-                },
-                onNavigateToScreen = { route ->
-                    navController.popBackStack(route, inclusive = true)
-                    navController.navigate(route) {
-                        popUpTo(route) { inclusive = true }
-                    }
-                }
-            )
+                })
         }
         composable(Screens.Orders.OrdersScreen.route) {
             OrdersScreen(
-              onNavigateToScreen = {
-                  navController.popBackStack(it, inclusive = true)
-                  navController.navigate(it){
-                      popUpTo(it) { inclusive = true }
-                  }
-              },
+                onNavigateToScreen = {
+                    navController.popBackStack(it, inclusive = true)
+                    navController.navigate(it) {
+                        popUpTo(it) { inclusive = true }
+                    }
+                },
                 navigateBack = {
                     navController.popBackStack(Screens.Home.HomeScreen.route, inclusive = true)
                     navController.navigate(Screens.Home.HomeScreen.route) {
@@ -163,7 +145,7 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
                 },
                 orderViewModel = orderViewModel,
                 authViewModel = authViewModel
-                )
+            )
         }
         composable(Screens.Profile.ProfileScreen.route) {
             ProfileScreen(paddingValues = paddingValues)

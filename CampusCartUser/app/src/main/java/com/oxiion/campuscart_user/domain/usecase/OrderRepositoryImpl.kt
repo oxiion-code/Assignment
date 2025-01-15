@@ -137,20 +137,19 @@ class OrderRepositoryImpl @Inject constructor(
 
             // Check if the query is empty
             if (ordersQuerySnapshot.isEmpty) {
-                return Result.success(emptyList())
+                return Result.success(emptyList()) // Return empty list if no orders
             }
 
             // Map the documents to Order objects
             val orders = ordersQuerySnapshot.documents.mapNotNull { document ->
                 val order = document.toObject(Order::class.java)
-                order // Directly return the order object without modifying the ID
+                order // Return the order object directly
             }
 
-            // Return the list of orders
-            Result.success(orders)
+            Result.success(orders) // Return orders list
         } catch (e: Exception) {
             Log.e("getOrders", "Error fetching orders: ${e.message}", e)
-            Result.failure(e)
+            Result.failure(e) // Return failure if exception occurs
         }
     }
 

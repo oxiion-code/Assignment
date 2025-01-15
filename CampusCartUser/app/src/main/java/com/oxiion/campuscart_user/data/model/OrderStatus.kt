@@ -1,10 +1,11 @@
 package com.oxiion.campuscart_user.data.model
 
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 
 data class OrderStatus(
-    val isDelivered: Boolean=false,
-    val isCancelled: Boolean=false,
-    val isOnProgress:Boolean=true,
+    @SerialName("delivered") val isDelivered: Boolean = false,
+    @SerialName("cancelled") val isCancelled: Boolean = false,
+    @SerialName("onProgress") val isOnProgress: Boolean = true
 )
+

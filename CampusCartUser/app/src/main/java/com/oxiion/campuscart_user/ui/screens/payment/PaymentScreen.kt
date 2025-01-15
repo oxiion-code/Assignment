@@ -54,7 +54,7 @@ fun PaymentScreen(
     paymentViewModel: PaymentViewModel = viewModel(),
     cartViewModel: CartViewModel,
     orderViewModel: OrderViewModel,
-    onPaymentSuccess: () -> Unit
+    onNavigationBack: () -> Unit
 ) {
     val context = LocalContext.current
     val upiAppsSdk: List<UPIApplicationInfo> by remember { mutableStateOf(PhonePe.getUpiApps()) }
@@ -67,6 +67,7 @@ fun PaymentScreen(
     val orderCreationStatus by orderViewModel.orderCreationState.collectAsState()
     val isLoading = remember { mutableStateOf(false) }
     val userData by authViewModel.userData.collectAsState()
+    val showConfirmationOrder=remember { mutableStateOf(false)}
 
     // State for wallet usage
     var useWalletMoney by remember { mutableStateOf(false) }
@@ -198,7 +199,7 @@ fun PaymentScreen(
                     // Directly create the order as no payment is required
                     orderViewModel.createOrder(products = cartItems, totalPrice = totalAmount, "")
                     Toast.makeText(context, "Order created successfully!", Toast.LENGTH_SHORT).show()
-                    onPaymentSuccess()
+                    showConfirmationOrder.value=true
                 } else if (selectedPackageName != null) {
                     paymentProcessed = false
                     isProcessing = true
@@ -236,7 +237,9 @@ fun PaymentScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        // Order creation status handling (same as before)
+        if (showConfirmationOrder.value){
+            OrderConfirmationDialog(showConfirmationOrder,cartViewModel,orderViewModel,onNavigationBack)
+        }
         when (orderCreationStatus) {
             is DataState.Error -> {
                 isLoading.value = false
@@ -254,15 +257,12 @@ fun PaymentScreen(
             }
             DataState.Success -> {
                 isLoading.value = false
+                showConfirmationOrder.value=true
                 orderViewModel.resetOrderCreationState()
-                onPaymentSuccess()
             }
         }
     }
 }
-
-
-
 @Composable
 fun PaymentApp(
     app: UPIApplicationInfo,

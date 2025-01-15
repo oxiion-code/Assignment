@@ -125,6 +125,7 @@ fun OrdersScreen(
                         }
                     )
                 }
+
                 ScreenStateOrders.OrdersList -> {
                     if (ordersList.isNullOrEmpty()) {
                         Text(
@@ -138,7 +139,9 @@ fun OrdersScreen(
                     } else {
                         OrdersListScreen(
                             orders = ordersList!!,
-                            onOrderCardClick = { order -> currentScreen = ScreenStateOrders.OrderDetails(order) }
+                            onOrderCardClick = { order ->
+                                currentScreen = ScreenStateOrders.OrderDetails(order)
+                            }
                         )
                     }
                 }
@@ -150,13 +153,20 @@ fun OrdersScreen(
             is DataState.Loading -> {
                 isLoading.value = true
             }
+
             is DataState.Error -> {
                 isLoading.value = false
-                Toast.makeText(context, (getOrdersState as DataState.Error).message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    (getOrdersState as DataState.Error).message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+
             is DataState.Success -> {
                 isLoading.value = false
             }
+
             else -> Unit
         }
     }
@@ -187,7 +197,6 @@ fun OrdersListScreen(
     }
 }
 
-
 @Composable
 fun OrderCard(
     order: Order,
@@ -216,16 +225,33 @@ fun OrderCard(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(80.dp,100.dp)
+                    .size(80.dp, 100.dp)
                     .background(Color.White)
             ) {
-                val painter = rememberAsyncImagePainter(order.items[0].image)
-                Image(
-                    painter = painter,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(70.dp,80.dp)
-                )
+                // Check if order.items is not empty before accessing the first item
+                if (order.items.isNotEmpty()) {
+                    val painter = rememberAsyncImagePainter(order.items[0].image)
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.size(70.dp, 80.dp)
+                    )
+                } else {
+                    // Show a placeholder or a default image if the list is empty
+                    Box(
+                        modifier = Modifier
+                            .size(70.dp, 80.dp)
+                            .background(Color.Gray)
+                    ) {
+                        Text(
+                            text = "No Image",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(
@@ -253,7 +279,8 @@ fun OrderCard(
                     else -> Pair(Color(0xFFEAEAEA), "Unknown") // Default fallback case
                 }
                 Card(
-                    modifier = Modifier.padding(top = 4.dp), colors = CardDefaults.cardColors(
+                    modifier = Modifier.padding(top = 4.dp),
+                    colors = CardDefaults.cardColors(
                         containerColor = color
                     ),
                     shape = RoundedCornerShape(4.dp)
