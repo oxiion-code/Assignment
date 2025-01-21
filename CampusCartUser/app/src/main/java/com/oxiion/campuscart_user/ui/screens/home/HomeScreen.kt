@@ -1,5 +1,6 @@
 package com.oxiion.campuscart_user.ui.screens.home
 
+import android.app.Activity
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -16,8 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +42,7 @@ import com.oxiion.campuscart_user.ui.components.AppTopBar
 import com.oxiion.campuscart_user.ui.components.LoadingDialogTransparent
 
 import com.oxiion.campuscart_user.utils.DataState
+import com.oxiion.campuscart_user.utils.SharedPreferencesManager
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 import com.oxiion.campuscart_user.viewmodels.CartViewModel
 
@@ -53,18 +57,41 @@ fun HomeScreen(
     val productList by authViewModel.productList.collectAsState()
     val userData by authViewModel.userData.collectAsState()
     var currentScreen by remember { mutableStateOf<ScreenState>(ScreenState.ProductList) }
-    var isHomeScreen by remember{ mutableStateOf(true) }
-    val isAddToCart = remember{ mutableStateOf(false) }
+    var isHomeScreen by remember { mutableStateOf(true) }
+    val isAddToCart = remember { mutableStateOf(false) }
     val addToCartState by cartViewModel.addToCartState.collectAsState()
+    val college = SharedPreferencesManager.getCollege(context)
+    val hostel = SharedPreferencesManager.getHostelNumber(context)
+
+    // Double back to exit logic
+    var backPressedTime by remember { mutableLongStateOf(0L) }
+    val exitMessage = "Press back again to exit"
+
     BackHandler {
         if (currentScreen is ScreenState.ProductDetails) {
             currentScreen = ScreenState.ProductList
-            isHomeScreen=true
+            isHomeScreen = true
         } else {
-            isHomeScreen=false
-            navigateBack()
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - backPressedTime < 2000) {
+                (context as? Activity)?.finish() // Exit the app
+            } else {
+                backPressedTime = currentTime
+                Toast.makeText(context, exitMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
+    LaunchedEffect(Unit) {
+        val uid = SharedPreferencesManager.getUid(context)
+        val newCollege = SharedPreferencesManager.getCollege(context)
+        val newHostel = SharedPreferencesManager.getHostelNumber(context)
+        if (uid != null && newHostel != null) {
+            authViewModel.fetchUserData(uid)
+            authViewModel.fetchProductList(newCollege!!, newHostel)
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +104,7 @@ fun HomeScreen(
                     isHomeScreen = isHomeScreen,
                     onBackClick = {
                         if (currentScreen is ScreenState.ProductDetails) {
-                            isHomeScreen=true
+                            isHomeScreen = true
                             currentScreen = ScreenState.ProductList
                         } else {
                             navigateBack()
@@ -106,50 +133,56 @@ fun HomeScreen(
                     productList = productList,
                     userData = userData,
                     onProductClick = { product ->
-                        isHomeScreen=false
+                        authViewModel.fetchProductList(college!!, hostel!!)
+                        isHomeScreen = false
                         currentScreen = ScreenState.ProductDetails(product)
                     }
                 )
                 is ScreenState.ProductDetails -> ProductDetailsScreen(
-                    navigateBack=navigateBack,
+                    reloadData = {
+                        authViewModel.fetchProductList(college!!, hostel!!)
+                    },
+                    navigateBack = navigateBack,
                     product = screen.product,
-                    onAddToCart = {product->
+                    onAddToCart = { product ->
                         cartViewModel.findCartItemByProductId(
-                           productId =  product.id,
-                            onResult = {result->
-                                if (result==null){
-                                    cartViewModel.addToCart(product,1)
-                                }else{
-                                    Toast.makeText(context,"Already added to cart",Toast.LENGTH_SHORT).show()
+                            productId = product.id,
+                            onResult = { result ->
+                                if (result == null) {
+                                    cartViewModel.addToCart(product, 1)
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Already added to cart",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         )
-
                     },
                 )
             }
         }
-        when(addToCartState){
+        when (addToCartState) {
             is DataState.Error -> {
-                isAddToCart.value=false
-                Toast.makeText(context, (addToCartState as DataState.Error).message,Toast.LENGTH_SHORT).show()
+                isAddToCart.value = false
+                Toast.makeText(context, (addToCartState as DataState.Error).message, Toast.LENGTH_SHORT).show()
                 cartViewModel.resetAddToCartState()
             }
-            DataState.Idle -> {
-
-            }
+            DataState.Idle -> {}
             DataState.Loading -> {
-                isAddToCart.value=true
+                isAddToCart.value = true
                 LoadingDialogTransparent(isAddToCart)
             }
             DataState.Success -> {
-                isAddToCart.value=false
-                Toast.makeText(context, "Product is added to cart",Toast.LENGTH_SHORT).show()
+                isAddToCart.value = false
+                Toast.makeText(context, "Product is added to cart", Toast.LENGTH_SHORT).show()
                 cartViewModel.resetAddToCartState()
             }
         }
     }
 }
+
 
 @Composable
 fun ProductList(

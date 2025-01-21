@@ -30,7 +30,7 @@ class CartRepositoryImpl @Inject constructor(
                     productCategory = product.category,
                     quantity = quantity,
                     rating = product.rating,
-                    isAvailable = product.isAvailable,
+                    isAvailable = product.available,
                     discountedPrice = product.discount,
                     description = product.description,
                     price = product.price,

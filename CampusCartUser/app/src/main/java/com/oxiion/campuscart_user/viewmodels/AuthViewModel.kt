@@ -1,6 +1,7 @@
 package com.oxiion.campuscart_user.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oxiion.campuscart_user.data.model.User
@@ -11,6 +12,7 @@ import com.oxiion.campuscart_user.utils.DataStateAuth
 import com.oxiion.campuscart_user.utils.SharedPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -45,6 +47,27 @@ class AuthViewModel @Inject constructor(
 
     private val _productList=MutableStateFlow<List<Product>>(listOf())
     val productList: StateFlow<List<Product>> = _productList
+
+    private val _updateDetailsState = MutableStateFlow<DataState>(DataState.Idle)
+    val updateDetailsState: StateFlow<DataState> = _updateDetailsState
+
+    private val _verifyEmailState = MutableStateFlow<DataState>(DataState.Idle)
+    val verifyEmailState: StateFlow<DataState> = _verifyEmailState
+
+    private val _changePasswordState = MutableStateFlow<DataState>(DataState.Idle)
+    val changePasswordState: StateFlow<DataState> = _changePasswordState
+
+    private val _isEmailSaved= MutableStateFlow(false)
+    val isEmailSaved: StateFlow<Boolean> = _isEmailSaved
+
+    private val _sendEmailState = MutableStateFlow<DataState>(DataState.Idle)
+    val sendEmailState: StateFlow<DataState> = _sendEmailState
+
+    private val _forgotPasswordState = MutableStateFlow<DataState>(DataState.Idle)
+    val forgotPasswordState: StateFlow<DataState> = _forgotPasswordState
+
+    private val _deleteAccountState= MutableStateFlow<DataState>(DataState.Idle)
+    val deleteAccountState: StateFlow<DataState> = _deleteAccountState
 
     private var uid: String? = null
 
@@ -170,6 +193,45 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun updateDetails(
+        context: Context,
+        updatedName:String,
+        updatedPhoneNumber:String,
+        updatedHostelNumber:String){
+        viewModelScope.launch {
+            _updateDetailsState.value=DataState.Idle
+            val result = repository.updateUserDetails(
+                name = updatedName,
+                phoneNumber = updatedPhoneNumber,
+                hostelNumber = updatedHostelNumber
+            )
+            result.fold(
+                onSuccess = {
+                    _updateDetailsState.value=DataState.Success
+                    SharedPreferencesManager.saveHostelNumber(hostelNumber = updatedHostelNumber, context = context )
+                    // Notify the user that the update was successful
+                    Log.i("ViewModel", "User details updated successfully")
+                },
+                onFailure = { error ->
+                    _updateDetailsState.value=DataState.Error(error.message.toString())
+                    // Handle the error (e.g., show a Toast message or update UI)
+                    Log.e("ViewModel", "Error updating user details: ${error.message}")
+                }
+            )
+        }
+    }
+    fun resetChangeCredentialState(){
+        _sendEmailState.value=DataState.Idle
+        _changePasswordState.value=DataState.Idle
+        _verifyEmailState.value=DataState.Idle
+    }
+    fun resetUpdateState(){
+        _updateDetailsState.value=DataState.Idle
+    }
+    fun resetLogoutState(){
+        _logOutState.value=DataState.Idle
+    }
+
     // Check if User is Logged In
     fun isUserLoggedIn(): Boolean {
         val isLoggedOut = SharedPreferencesManager.isLoggedOut(context)
@@ -179,6 +241,34 @@ class AuthViewModel @Inject constructor(
     fun resetSignInState() {
         _signInState.value = DataStateAuth.Idle
     }
+    fun verifyEmail(){
+        viewModelScope.launch {
+            _verifyEmailState.value=DataState.Loading
+            val result=repository.verifyEmail()
+            if (result.isSuccess) {
+                _verifyEmailState.value=DataState.Success
+                // Notify the user that email verification was successful
+            }else{
+                _verifyEmailState.value=DataState.Error(result.exceptionOrNull()?.message.toString())
+            }
+        }
+    }
+    fun changePassword(currentPassword:String,newPassword:String){
+        viewModelScope.launch {
+            _changePasswordState.value=DataState.Loading
+            val result=repository.changePassword(currentPassword = currentPassword, newPassword = newPassword)
+            if (result.isSuccess) {
+                _changePasswordState.value=DataState.Success
+                // Notify the user that password change was successful
+            }else{
+                _changePasswordState.value=DataState.Error(result.exceptionOrNull()?.message.toString())
+            }
+        }
+    }
+
+
+
+
     // LogOut Functionality
     fun logOut() {
         viewModelScope.launch {
@@ -192,6 +282,32 @@ class AuthViewModel @Inject constructor(
                 _logOutState.value = DataState.Error(
                     result.exceptionOrNull()?.message ?: "Unknown Error"
                 )
+            }
+        }
+    }
+
+    fun forgotPassword(email:String){
+        viewModelScope.launch {
+            _forgotPasswordState.value=DataState.Loading
+            val result=repository.forgotPassword(email = email)
+            if (result.isSuccess){
+                _forgotPasswordState.value=DataState.Success
+            }else{
+                _forgotPasswordState.value=DataState.Error(result.exceptionOrNull()?.message.toString())
+            }
+        }
+    }
+    fun resetForgotPassword(){
+        _forgotPasswordState.value=DataState.Idle
+    }
+    fun deleteAccount(password: String){
+        viewModelScope.launch {
+            _deleteAccountState.value=DataState.Loading
+            val result=repository.deleteAccount(password = password)
+            if (result.isSuccess) {
+                _deleteAccountState.value=DataState.Success
+            }else{
+                _deleteAccountState.value=DataState.Error(result.exceptionOrNull()?.message.toString())
             }
         }
     }

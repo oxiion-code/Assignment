@@ -153,6 +153,30 @@ class OrderRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getOrderById(orderId: String): Result<Order> {
+        return try {
+            val userId = auth.currentUser?.uid?: return Result.failure(Exception("User not logged in"))
+            val orderDocRef = firestore.collection("Users")
+               .document(userId)
+               .collection("orders")
+               .document(orderId)
+               .get()
+               .await()
+
+            if (!orderDocRef.exists()) {
+                return Result.failure(Exception("Order not found"))
+            }
+
+            val order = orderDocRef.toObject(Order::class.java)
+               ?: return Result.failure(Exception("Failed to parse Order object"))
+
+            Result.success(order)
+        } catch (e: Exception) {
+            Log.e("getOrderById", "Error fetching order: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
     override suspend fun cancelOrder(order: Order): Result<Boolean> {
         return try {
             val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not logged in"))

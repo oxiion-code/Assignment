@@ -31,16 +31,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.oxiion.campuscart_user.data.model.Product
+import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 import com.oxiion.campuscart_user.viewmodels.CartViewModel
 
 @Composable
 fun ProductDetailsScreen(
+    reloadData: ()->Unit,
     navigateBack:()->Unit,
     product: Product,
     onAddToCart: (Product) -> Unit
     ) {
     BackHandler {
-        navigateBack()
+
     }
     Column(
         modifier = Modifier
@@ -145,7 +147,9 @@ fun ProductDetailsScreen(
         Spacer(Modifier.height(8.dp))
         // Add to Cart Button
         Button(
-            onClick = { onAddToCart(product) },
+            onClick = {
+                reloadData()
+                onAddToCart(product) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),

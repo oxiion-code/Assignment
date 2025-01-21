@@ -4,8 +4,8 @@ import kotlinx.serialization.SerialName
 
 
 data class OrderStatus(
-    @SerialName("delivered") val isDelivered: Boolean = false,
-    @SerialName("cancelled") val isCancelled: Boolean = false,
-    @SerialName("onProgress") val isOnProgress: Boolean = true
+     val delivered: Boolean = false,
+     val cancelled: Boolean = false,
+     val onProgress: Boolean = true
 )
 

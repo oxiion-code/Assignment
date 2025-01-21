@@ -40,6 +40,9 @@ class OrderViewModel @Inject constructor(
     private val _getOrdersState = MutableStateFlow<DataState>(DataState.Idle)
     val getOrdersState: StateFlow<DataState> = _getOrdersState
 
+    private val _getOrderState = MutableStateFlow<DataState>(DataState.Idle)
+    val getOrderState: StateFlow<DataState> = _getOrderState
+
     private val _cancelOrderState= MutableStateFlow<DataState>(DataState.Idle)
     val cancelOrderState: StateFlow<DataState> = _cancelOrderState
 
@@ -106,6 +109,24 @@ class OrderViewModel @Inject constructor(
         _cancelOrderState.value=DataState.Idle
     }
 
+    fun fetchOrderData(orderId:String){
+        _getOrderState.value=DataState.Idle
+        viewModelScope.launch {
+            _getOrderState.value = DataState.Loading
+            try {
+                val result = repository.getOrderById(orderId)
+                if (result.isSuccess) {
+                    _orderData.value = result.getOrNull()
+                    _getOrderState.value = DataState.Success
+                } else {
+                    throw Exception(result.exceptionOrNull()?.message?: "Failed to fetch order data")
+                }
+            } catch (e: Exception) {
+                _getOrderState.value = DataState.Error(e.message?: "An error occurred")
+            }
+        }
+    }
+
     fun getOrders() {
         viewModelScope.launch {
             _getOrdersState.value = DataState.Loading
@@ -123,19 +144,42 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun cancelOrder(order: Order) {
+    fun cancelOrder(orderId: String) {
         viewModelScope.launch {
-            _cancelOrderState.value=DataState.Idle
-            val result = repository.cancelOrder(order)
-            if (result.isSuccess){
-                _cancelOrderState.value=DataState.Success
-                Log.d("OrderViewModel","Order cancelled successfully")
-            }else{
-                _cancelOrderState.value=DataState.Error(result.exceptionOrNull()?.message.toString())
+            _cancelOrderState.value = DataState.Loading
+            try {
+                // Fetch the order by its ID
+                val result = repository.getOrderById(orderId)
+
+                if (result.isSuccess) {
+                    val fetchedOrder = result.getOrNull()
+
+                    if (fetchedOrder != null && fetchedOrder.status.onProgress) {
+                        // Proceed with cancellation if the order is in progress
+                        val cancelResult = repository.cancelOrder(fetchedOrder)
+                        if (cancelResult.isSuccess) {
+                            _cancelOrderState.value = DataState.Success
+                            Log.d("OrderViewModel", "Order canceled successfully")
+                        } else {
+                            _cancelOrderState.value = DataState.Error(
+                                cancelResult.exceptionOrNull()?.message ?: "Failed to cancel order"
+                            )
+                        }
+                    } else {
+                        // If the order is already canceled or delivered, return an error message
+                        _cancelOrderState.value = DataState.Error("Order is already canceled or delivered")
+                    }
+                } else {
+                    _cancelOrderState.value = DataState.Error(
+                        result.exceptionOrNull()?.message ?: "Failed to fetch order data"
+                    )
+                }
+            } catch (e: Exception) {
+                _cancelOrderState.value = DataState.Error(e.message ?: "An error occurred")
             }
-            // Implement cancel logic here
         }
     }
+
 
     private fun CartItem.toProduct(): Product {
         return Product(
@@ -144,7 +188,7 @@ class OrderViewModel @Inject constructor(
             category = productCategory,
             quantity = quantity,
             rating = rating,
-            isAvailable = isAvailable,
+            available = isAvailable,
             discount = discountedPrice,
             description = description,
             price = price,

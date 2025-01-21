@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -82,7 +83,7 @@ fun OrdersScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().navigationBarsPadding(),
         topBar = {
             AppTopBar(
                 title = "My Orders",
@@ -116,7 +117,7 @@ fun OrdersScreen(
                         orderViewModel = orderViewModel,
                         order = screen.order,
                         onCancelOrderClick = { order ->
-                            orderViewModel.cancelOrder(order)
+                            orderViewModel.cancelOrder(order.id)
                         },
                         navigateBack = {
                             authViewModel.fetchUserData(uid)
@@ -273,9 +274,9 @@ fun OrderCard(
                     color = Color.DarkGray
                 )
                 val (color, showText) = when {
-                    order.status.isDelivered -> Pair(Color(0xFFC7F6C7), "Delivered")
-                    order.status.isCancelled -> Pair(Color(0xFFFFDAD6), "Cancelled")
-                    order.status.isOnProgress -> Pair(Color.LightGray, "In Progress")
+                    order.status.delivered-> Pair(Color(0xFFC7F6C7), "Delivered")
+                    order.status.cancelled -> Pair(Color(0xFFFFDAD6), "Cancelled")
+                    order.status.onProgress -> Pair(Color.LightGray, "In Progress")
                     else -> Pair(Color(0xFFEAEAEA), "Unknown") // Default fallback case
                 }
                 Card(

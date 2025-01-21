@@ -16,6 +16,7 @@ import com.oxiion.campuscart_user.ui.screens.auth.SignUpScreen
 import com.oxiion.campuscart_user.ui.screens.cart.CartScreen
 import com.oxiion.campuscart_user.ui.screens.home.HomeScreen
 import com.oxiion.campuscart_user.ui.screens.orders.OrdersScreen
+import com.oxiion.campuscart_user.ui.screens.profile.ChangeDetailsScreen
 import com.oxiion.campuscart_user.ui.screens.profile.ProfileScreen
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 import com.oxiion.campuscart_user.viewmodels.CartViewModel
@@ -80,12 +81,14 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
         }
         composable(Screens.Auth.ForgotPassword.route) {
             ForgotPasswordScreen(
+                authViewModel = authViewModel,
                 innerPaddingValues = paddingValues,
                 onSignInClick = {
                     navController.navigateUp()
                 }
             )
         }
+
         composable(Screens.Home.HomeScreen.route) {
             HomeScreen(
                 authViewModel = authViewModel,
@@ -148,7 +151,26 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
             )
         }
         composable(Screens.Profile.ProfileScreen.route) {
-            ProfileScreen(paddingValues = paddingValues)
+            ProfileScreen(
+                authViewModel = authViewModel,
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                navigateToScreen = {route->
+                    navController.navigate(route){
+                        popUpTo(route){inclusive=true}
+                    }
+                },
+                changeAddressScreen = {
+                    navController.navigate(Screens.Profile.ChangeAddressScreen.route)
+                }
+            )
+        }
+        composable(Screens.Profile.ChangeAddressScreen.route){
+            ChangeDetailsScreen(authViewModel,
+                navigationBack = {
+                   navController.navigateUp()
+                })
         }
     }
 }

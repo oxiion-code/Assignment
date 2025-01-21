@@ -184,6 +184,6 @@ fun OrderConfirmationDialog(
                     Text("OK", color = Color(0xFF556B2F), fontWeight = FontWeight.Bold)
                 }
             }
-        )//
+        )
     }
 }

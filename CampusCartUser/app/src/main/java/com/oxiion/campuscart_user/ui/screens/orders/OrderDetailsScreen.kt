@@ -40,6 +40,7 @@ import com.oxiion.campuscart_user.ui.components.AppAlertBox
 import com.oxiion.campuscart_user.ui.components.AppCustomBlueButton
 import com.oxiion.campuscart_user.ui.components.AppCustomWhiteButton
 import com.oxiion.campuscart_user.ui.components.LoadingDialogSmall
+import com.oxiion.campuscart_user.ui.components.LoadingDialogTransparent
 import com.oxiion.campuscart_user.ui.screens.home.ProductCard
 import com.oxiion.campuscart_user.utils.DataState
 import com.oxiion.campuscart_user.viewmodels.OrderViewModel
@@ -55,6 +56,7 @@ fun OrderDetailsScreen(
     val orderCancelState by orderViewModel.cancelOrderState.collectAsState()
     val context= LocalContext.current
     val isLoading = remember { mutableStateOf(false) }
+    val isDelivered=remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -174,6 +176,7 @@ fun OrderDetailsScreen(
         AppAlertBox(
             onConfirm = {
                 onCancelOrderClick(order)
+                cancellationDialog.value=false
             },
             onDismiss = {
                 cancellationDialog.value=false
@@ -182,6 +185,9 @@ fun OrderDetailsScreen(
             message = "Do you confirm the cancellation of this order?"
         )
     }
+    if (isLoading.value){
+        LoadingDialogTransparent(isLoading)
+    }
     when(orderCancelState){
         is DataState.Error -> {
             isLoading.value=false
@@ -189,11 +195,9 @@ fun OrderDetailsScreen(
             orderViewModel.resetOrderCancellationState()
         }
         DataState.Idle -> {
-
         }
         DataState.Loading -> {
             isLoading.value=true
-            LoadingDialogSmall(isLoading)
         }
         DataState.Success -> {
             isLoading.value=false

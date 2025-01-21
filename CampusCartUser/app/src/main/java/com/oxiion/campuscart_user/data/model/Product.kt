@@ -7,10 +7,11 @@ data class Product(
     val category: String = "",
     val quantity: Int = 0,
     val rating: Double = 0.0,
-    @SerialName("available") val isAvailable: Boolean = false, // Firestore field "available" maps to isAvailable
+    val available: Boolean = true,
     val discount: Double? = null,
     val description: String = "",
     val price: Double = 0.0,
     val image: String = ""
 )
+
 

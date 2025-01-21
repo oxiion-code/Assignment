@@ -125,7 +125,6 @@ fun SignUpInfoScreen(
                 },
                 text = selectedHostel.value.ifEmpty { "Select hostel" }
             )
-            Text("password:${userData.college}")
         }
         AppCustomWhiteButton(
             onClick = {

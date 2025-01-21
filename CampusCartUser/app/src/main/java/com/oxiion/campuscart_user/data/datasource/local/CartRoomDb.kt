@@ -59,7 +59,7 @@ interface CartDao {
     suspend fun clearCart()
 }
 
-@Database(entities = [CartItem::class], version = 3, exportSchema = true)
+@Database(entities = [CartItem::class], version = 4, exportSchema = true)
 abstract class CartDatabase : RoomDatabase() {
 
     abstract fun cartDao(): CartDao
