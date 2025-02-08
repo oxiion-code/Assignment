@@ -68,7 +68,6 @@ class CartViewModel @Inject constructor(
             }
         }
     }
-
     // Find a cart item by its product ID
     fun findCartItemByProductId(productId: String, onResult: (CartItem?) -> Unit) {
         viewModelScope.launch {

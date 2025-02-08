@@ -134,6 +134,7 @@ fun SignInScreen(
             is DataStateAuth.Error -> {
                 isLoading.value=false
                Toast.makeText(context, (signInState as DataStateAuth.Error).message,Toast.LENGTH_SHORT).show()
+                authViewModel.resetSignInState()
             }
             DataStateAuth.Idle -> {
 

@@ -1,7 +1,5 @@
 package com.oxiion.campuscart_user.data.model
 
-import com.oxiion.campuscart.data.models.roles.CampusMan
-
 
 data class Admin(
     val name: String="Rudra Narayan Rath",

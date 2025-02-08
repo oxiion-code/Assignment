@@ -21,6 +21,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -36,14 +37,18 @@ import com.oxiion.campuscart_user.viewmodels.CartViewModel
 
 @Composable
 fun ProductDetailsScreen(
+    isHomeScreen:MutableState<Boolean>,
     reloadData: ()->Unit,
-    navigateBack:()->Unit,
+    updateScreenState: (ScreenState) -> Unit,
     product: Product,
     onAddToCart: (Product) -> Unit
     ) {
     BackHandler {
-
+        isHomeScreen.value=true
+        reloadData()
+        updateScreenState(ScreenState.ProductList) // Update screen state instead of navigating back
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

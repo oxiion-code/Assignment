@@ -116,7 +116,8 @@ fun StartAppNavigation(navController: NavController, paddingValues: PaddingValue
                         popUpTo(Screens.Home.HomeScreen.route) { inclusive = true }
                     }
                 },
-                cartViewModel = cartViewModel
+                cartViewModel = cartViewModel,
+                orderViewModel = orderViewModel
             )
         }
         composable(Screens.Payment.PaymentScreen.route) {

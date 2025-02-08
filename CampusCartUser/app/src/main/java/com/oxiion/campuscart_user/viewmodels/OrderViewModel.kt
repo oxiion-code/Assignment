@@ -12,6 +12,7 @@ import com.oxiion.campuscart_user.data.model.OrderStatus
 import com.oxiion.campuscart_user.data.model.Product
 import com.oxiion.campuscart_user.domain.repository.OrderRepository
 import com.oxiion.campuscart_user.utils.DataState
+import com.oxiion.campuscart_user.utils.SharedPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,9 @@ class OrderViewModel @Inject constructor(
 
     private val _orderCreationState = MutableStateFlow<DataState>(DataState.Idle)
     val orderCreationState: StateFlow<DataState> = _orderCreationState
+
+    private val _checkOrdersAvailabilityState= MutableStateFlow<DataState>(DataState.Idle)
+    val checkOrdersAvailabilityState: StateFlow<DataState> = _checkOrdersAvailabilityState
 
     private val _getOrdersState = MutableStateFlow<DataState>(DataState.Idle)
     val getOrdersState: StateFlow<DataState> = _getOrdersState
@@ -109,6 +113,25 @@ class OrderViewModel @Inject constructor(
         _cancelOrderState.value=DataState.Idle
     }
 
+    fun checkOrdersAvailability(cartItems: List<CartItem>) {
+        viewModelScope.launch {
+            _checkOrdersAvailabilityState.value = DataState.Loading
+            try {
+                val result = repository.isOrderAvailable(cartItems)
+                if (result.isSuccess) {
+                    _checkOrdersAvailabilityState.value = DataState.Success
+                } else {
+                    throw Exception(result.exceptionOrNull()?.message?: "Failed to check orders availability")
+                }
+            } catch (e: Exception) {
+                _checkOrdersAvailabilityState.value = DataState.Error(e.message?: "An error occurred")
+            }
+        }
+    }
+
+    fun resetCheckOrderAvailabilityState() {
+        _checkOrdersAvailabilityState.value=DataState.Idle
+    }
     fun fetchOrderData(orderId:String){
         _getOrderState.value=DataState.Idle
         viewModelScope.launch {

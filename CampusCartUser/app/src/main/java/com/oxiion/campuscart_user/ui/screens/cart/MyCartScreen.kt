@@ -1,5 +1,6 @@
 package com.oxiion.campuscart_user.ui.screens.cart
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -29,18 +31,26 @@ import com.oxiion.campuscart_user.ui.components.AppTopBar
 import com.oxiion.campuscart_user.viewmodels.AuthViewModel
 import com.oxiion.campuscart_user.viewmodels.CartViewModel
 import com.oxiion.campuscart_user.data.datasource.local.CartItem
+import com.oxiion.campuscart_user.utils.DataState
+import com.oxiion.campuscart_user.utils.SharedPreferencesManager
+import com.oxiion.campuscart_user.viewmodels.OrderViewModel
 
 @Composable
 fun CartScreen(
     cartViewModel: CartViewModel,
     authViewModel: AuthViewModel,
+    orderViewModel: OrderViewModel,
     navigateToScreen: (String) -> Unit,
     navigateBack: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val college = SharedPreferencesManager.getCollege(context)!!
+    val hostel = SharedPreferencesManager.getHostelNumber(context)!!
     val userData by authViewModel.userData.collectAsState()
     val cartItems by cartViewModel.cartItems.collectAsState()
     val totalPrice by cartViewModel.totalPrice.collectAsState()
     val discountedPrice by cartViewModel.discountedPrice.collectAsState()
+    val checkOrdersAvailabilityState by orderViewModel.checkOrdersAvailabilityState.collectAsState()
 
     BackHandler { navigateBack() }
 
@@ -51,7 +61,10 @@ fun CartScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().navigationBarsPadding().background(Color.White),
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+            .background(Color.White),
         topBar = {
             userData.address?.let {
                 AppTopBar(
@@ -65,28 +78,28 @@ fun CartScreen(
         bottomBar = {
             AppBottomBar(
                 currentScreen = Screens.Cart.CartScreen.route,
-                onNavigate=navigateToScreen
+                onNavigate = navigateToScreen
             )
         }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding).background(Color.White)
+                .padding(padding)
+                .background(Color.White)
         ) {
             if (cartItems.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier.weight(1f)
-                ) {
+                LazyColumn(modifier = Modifier.weight(1f)) {
                     items(cartItems) { cartItem ->
                         CartItemView(
                             cartItem = cartItem,
                             onRemoveCartItemClick = { item ->
                                 cartViewModel.removeFromCart(item)
                             },
-                            onChangeItemQuantityClick ={ item ->
+                            onChangeItemQuantityClick = { item ->
                                 cartViewModel.updateCartItem(item)
-                            })
+                            }
+                        )
                     }
                 }
             } else {
@@ -117,28 +130,53 @@ fun CartScreen(
                         color = Color(0xFF00476B)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Button(
                         onClick = {
-                            navigateToScreen(Screens.Payment.PaymentScreen.route)
+                            authViewModel.fetchProductList(college, hostel)
+                            orderViewModel.checkOrdersAvailability(cartItems)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp),
-                        enabled = totalPrice > 0.0,
+                        enabled = totalPrice > 0.0 && checkOrdersAvailabilityState !is DataState.Loading,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF29638A),
                             contentColor = Color.White
                         )
                     ) {
-                        Text(
-                            text = "Pay ₹$discountedPrice",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        if (checkOrdersAvailabilityState is DataState.Loading) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else {
+                            Text(
+                                text = "Pay ₹$discountedPrice",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
                     }
                 }
             }
         }
     }
+
+    // Observe availability check result
+    LaunchedEffect(checkOrdersAvailabilityState) {
+        when (checkOrdersAvailabilityState) {
+            is DataState.Success -> {
+                navigateToScreen(Screens.Payment.PaymentScreen.route)
+                orderViewModel.resetCheckOrderAvailabilityState()
+            }
+            is DataState.Error -> {
+                Toast.makeText(context, "Some products are no longer available", Toast.LENGTH_SHORT).show()
+                orderViewModel.resetCheckOrderAvailabilityState()
+            }
+            else -> {} // Do nothing for Idle or Loading states
+        }
+    }
 }
+
 
 @Composable
 fun CartItemView(

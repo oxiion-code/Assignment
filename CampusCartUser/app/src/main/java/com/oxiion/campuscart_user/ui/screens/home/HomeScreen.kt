@@ -57,7 +57,7 @@ fun HomeScreen(
     val productList by authViewModel.productList.collectAsState()
     val userData by authViewModel.userData.collectAsState()
     var currentScreen by remember { mutableStateOf<ScreenState>(ScreenState.ProductList) }
-    var isHomeScreen by remember { mutableStateOf(true) }
+    var isHomeScreen = remember { mutableStateOf(true) }
     val isAddToCart = remember { mutableStateOf(false) }
     val addToCartState by cartViewModel.addToCartState.collectAsState()
     val college = SharedPreferencesManager.getCollege(context)
@@ -70,17 +70,18 @@ fun HomeScreen(
     BackHandler {
         if (currentScreen is ScreenState.ProductDetails) {
             currentScreen = ScreenState.ProductList
-            isHomeScreen = true
+            isHomeScreen.value = true
         } else {
             val currentTime = System.currentTimeMillis()
             if (currentTime - backPressedTime < 2000) {
-                (context as? Activity)?.finish() // Exit the app
+                (context as? Activity)?.finish()
             } else {
                 backPressedTime = currentTime
                 Toast.makeText(context, exitMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
     LaunchedEffect(Unit) {
         val uid = SharedPreferencesManager.getUid(context)
@@ -101,10 +102,10 @@ fun HomeScreen(
                 AppTopBar(
                     title = "CampusCart",
                     hostelName = it.hostelNumber,
-                    isHomeScreen = isHomeScreen,
+                    isHomeScreen = isHomeScreen.value,
                     onBackClick = {
                         if (currentScreen is ScreenState.ProductDetails) {
-                            isHomeScreen = true
+                            isHomeScreen.value = true
                             currentScreen = ScreenState.ProductList
                         } else {
                             navigateBack()
@@ -134,15 +135,18 @@ fun HomeScreen(
                     userData = userData,
                     onProductClick = { product ->
                         authViewModel.fetchProductList(college!!, hostel!!)
-                        isHomeScreen = false
+                        isHomeScreen.value = false
                         currentScreen = ScreenState.ProductDetails(product)
                     }
                 )
-                is ScreenState.ProductDetails -> ProductDetailsScreen(
+                is ScreenState.ProductDetails ->ProductDetailsScreen(
+                    isHomeScreen=isHomeScreen,
                     reloadData = {
                         authViewModel.fetchProductList(college!!, hostel!!)
                     },
-                    navigateBack = navigateBack,
+                    updateScreenState = { newState ->
+                        currentScreen = newState
+                    },
                     product = screen.product,
                     onAddToCart = { product ->
                         cartViewModel.findCartItemByProductId(
@@ -159,7 +163,7 @@ fun HomeScreen(
                                 }
                             }
                         )
-                    },
+                    }
                 )
             }
         }
@@ -246,13 +250,15 @@ fun ProductCard(
                 onProductClick(product)
             }
             .aspectRatio(0.75f), // Maintain consistent aspect ratio
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF29638A))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E88E5))
     ) {
         Column(
-            modifier = Modifier.padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.Start // Align text to the left
         ) {
             // Image Card
             Card(
@@ -263,7 +269,7 @@ fun ProductCard(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFCBE6FF))
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(product.image ),
+                    painter = rememberAsyncImagePainter(product.image),
                     contentDescription = "Product Image",
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
