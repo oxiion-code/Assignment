@@ -264,47 +264,45 @@ fun RevealedCardsScreen(
     ) {
         Text(
             text = "Your Tarot Reading",
-            fontSize = 24.sp,
+            fontSize = 28.sp,
             color = Color.White,
-            modifier = Modifier.padding(bottom = 16.dp),
+            modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
         )
+        Button(
+            onClick = {
+                // Create a message with selected cards
+                val cardNames = selectedCards.joinToString(", ") { it.name }
+                val tarotMessage = "I have selected the following Tarot cards: $cardNames. Please interpret them in  easy words and in small paragraph"
+
+                // Send message to Gemini API
+                chatViewModel.sendMessage(
+                    question = tarotMessage
+                )
+
+                // Show AI response dialog
+                showAiResponseDialog.value = true
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .clip(RoundedCornerShape(2.dp)),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(
+                text = "Ask AI",
+                fontSize = 18.sp,
+                color = Color.White
+            )
+        }
+
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            item {
-                Button(
-                    onClick = {
-                        // Create a message with selected cards
-                        val cardNames = selectedCards.joinToString(", ") { it.name }
-                        val tarotMessage = "I have selected the following Tarot cards: $cardNames. Please interpret them in  easy words and in small paragraph"
-
-                        // Send message to Gemini API
-                        chatViewModel.sendMessage(
-                            question = tarotMessage
-                        )
-
-                        // Show AI response dialog
-                        showAiResponseDialog.value = true
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                        .clip(RoundedCornerShape(2.dp)),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = "Ask AI",
-                        fontSize = 18.sp,
-                        color = Color.White
-                    )
-                }
-            }
-
             items(selectedCards) { card ->
                 TarotCardFlipAnimation(card)
             }

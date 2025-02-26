@@ -1,7 +1,9 @@
 package com.meow.cosmos.ui.screens.home
 
+import android.app.Activity
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -98,11 +101,13 @@ fun ChatScreen(
     var isSending by remember { mutableStateOf(false) } // Flag to disable send button while processing
     val keyboardController = LocalSoftwareKeyboardController.current
     val listState = rememberLazyListState()
-
+    BackHandler {
+        (context as? Activity)?.finish()
+    }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .imePadding(),
+            .imePadding().navigationBarsPadding(),
         bottomBar = {
             ChatInputField(
                 message = message,
