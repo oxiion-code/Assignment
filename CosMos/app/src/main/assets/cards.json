@@ -1,0 +1,488 @@
+[
+  {
+    "id": 1,
+    "name": "The Fool",
+    "link": "https://drive.google.com/file/d/18XoLUsjgqTj12oJgR1IIZ_GLKX6czgw_/view?usp=sharing",
+    "description": "Ah, the first step on your journey. You stand at the edge of the unknown, heart open,spirit free. Trust, dear soul, for the universe will catch you as you leap into the new."
+
+  },
+  {
+    "id": 2,
+    "name": "The Magician",
+    "link": "https://drive.google.com/file/d/15LeSZw8AgBUMNPI4dHeTUxxeg6JPVpbG/view?usp=sharing",
+    "description":"You possess all that you need. The world bends to your will when you embrace your power. Through focused intent, you manifest what you seek. Now, it is time to create."
+  },
+  {
+    "id": 3,
+    "name": "The High Priestess",
+    "link": "https://drive.google.com/file/d/15S2JF35IDdLy9oBT8fsMNBaZbLUmeqi5/view?usp=sharing",
+    "description": "The secrets of the cosmos lie within you, dear one. Silence the noise around you, andlisten to the whispers of your intuition. The answers you seek are hidden in the quietof your heart."
+  },
+  {
+    "id": 4,
+    "name": "The Empress",
+    "link": "https://drive.google.com/file/d/14aEUTafIv8ElfvBAUG2KdALA3LlZqukS/view?usp=sharing",
+    "description": "Nurture, care, and cultivate. The earth herself blesses you with her abundance. In your hands, the seeds of life will grow. You are both the creator and the nurturer."
+
+  },
+  {
+    "id": 5,
+    "name": "The Emperor",
+    "link": "https://drive.google.com/file/d/174q_cEHOx7Qbdpx8e5HM-Tb42EY3l6_A/view?usp=sharing",
+    "description":"Strength, discipline, and structure are the pillars of your journey. Stand tall, for you have the power to lead. Through wisdom and authority, you carve a path for others to follow."
+  },
+  {
+    "id": 6,
+    "name": "The Hierophant",
+    "link": "https://drive.google.com/file/d/16vi0zCOkwHxSFKywl3E9AFS3iZhW2y9J/view?usp=sharing",
+    "description": "Tradition holds the wisdom of the ages. Seek counsel from the wise, for thet eachings of the past will guide you. Your journey may be rooted in teachings older than time itself."
+  },
+  {
+    "id": 7,
+    "name": "The Lovers",
+    "link": "https://drive.google.com/file/d/14R0FumEFv0WfYOmRTPuXl_jINgOeASyr/view?usp=sharing",
+    "description": "A choice lies before you, one of the heart. Whether in love or in life, the decision you make will create a bond that echoes through your soul. Let your heart guide you to unity."
+  },
+  {
+    "id": 8,
+    "name": "The Chariot",
+    "link": "https://drive.google.com/file/d/16geGjVtQSU2JO_YG9tQkQQmno5SgfXDR/view?usp=sharing",
+    "description": "Victory is within your grasp, but the journey demands focus. Harness your willpower, and move forward with confidence. The road is long, but your determination will carry you."
+
+  },
+  {
+    "id": 9,
+    "name": "Strength",
+    "link": "https://drive.google.com/file/d/178hvBe2Vz2T9bJMkQ9IKMjnrebT_IxV0/view?usp=sharing",
+    "description": "True strength is not in power, but in gentleness. Tame the beast within with compassion, for it is through patience and courage that you will overcome all trials."
+  },
+  {
+    "id": 10,
+    "name": "The Hermit",
+    "link": "https://drive.google.com/file/d/18hs-xf324XRlBh4H7nJ3BWlAtHym17EA/view?usp=sharing",
+    "description": "Seek solitude, dear one. In quiet reflection, you will find the answers that elude the world. The wisdom you seek lies within, waiting for you to listen."
+
+  },
+  {
+    "id": 11,
+    "name": "Wheel of Fortune",
+    "link": "https://drive.google.com/file/d/15yMa7lqN-AgUfqabkgeHWsDzFyq_pYNk/view?usp=sharing",
+    "description": "The wheel turns, and with it, fortune shifts. Know that life is in constant motion— what was once stagnant now flows with new possibilities. The time for change is upon you."
+  },
+  {
+    "id": 12,
+    "name": "Justice",
+    "link": "https://drive.google.com/file/d/17IPzAho8VyD0wT23HFeEHw-7OSXRwLhy/view?usp=sharing",
+    "description": "Balance, dear soul. The scales of fate tip in accordance with your actions. What is right will be brought to light. Be true, and all will come to pass in harmony."
+
+  },
+  {
+    "id": 13,
+    "name": "The Hanged Man",
+    "link": "https://drive.google.com/file/d/18Lh98eN1OlbRKQrwc_qxggEkUNvUWPTK/view?usp=sharing",
+    "description": "Release control, and surrender to the flow of life. Only through letting go will you gain new insight. In stillness, you will see the truth that was once hidden from you."
+  },
+  {
+    "id": 14,
+    "name": "Death",
+    "link": "https://drive.google.com/file/d/14ZAzN_LyU78gfz8Aejt9KHHbYcgXkZ-s/view?usp=sharing",
+    "description": "Do not fear the end, for it is but a transformation. What must be shed will give way to new beginnings. Allow the old to pass, so that the new can rise and flourish."
+  },
+  {
+    "id": 15,
+    "name": "Temperance",
+    "link": "https://drive.google.com/file/d/15qv6euj7fYxTXb7XyFscjl2oQbi9E5I_/view?usp=sharing",
+    "description": "Patience, dear one. Balance your spirit and your desires. In moderation, you will find peace. Harmony exists in the space between extremes—find your center."
+  },
+  {
+    "id": 16,
+    "name": "The Devil",
+    "link": "https://drive.google.com/file/d/16RIcSX6UoPUvbjPCArh3E8UFJ135lo1G/view?usp=sharing",
+    "description": "Temptation calls, yet you are not bound by its chains. The shadows you fear are of your own making. Free yourself, for true liberation lies in releasing what binds you."
+
+  },
+  {
+    "id": 17,
+    "name": "The Tower",
+    "link": "https://drive.google.com/file/d/17FwOCjDD9OKpugFkrb1Zh1nMXRBM378E/view?usp=sharing",
+    "description": "The storm has arrived, and with it, the crumbling of false walls. Fear not the chaos— it is the breaking of old structures. Through destruction, new foundations shall be built."
+  },
+  {
+    "id": 18,
+    "name": "The Star",
+    "link": "https://drive.google.com/file/d/14-T5vJK102S_8_sUmTDPcRlbOdaFtxyQ/view?usp=sharing",
+    "description": "Hope rises, bright as the evening star. The darkness has passed, and healing begins. Trust in the universe, for the light is shining once more, guiding you toward your destiny"
+  },
+  {
+    "id": 19,
+    "name": "The Moon",
+    "link": "https://drive.google.com/file/d/18DkcGqL0Vtl_nPEGtuxVX4Ut2eIX-aJs/view?usp=sharing",
+    "description": "Beware the illusions that cloud your mind. The truth lies hidden beneath the surface, waiting to be revealed. Trust your intuition and seek clarity beyond the veil of shadows."
+  },
+  {
+    "id": 20,
+    "name": "The Sun",
+    "link": "https://drive.google.com/file/d/14X4_CEdXVucgAbCd4fN0P4QPFj9aq6UE/view?usp=sharing",
+    "description": "Rejoice, for the sun shines upon you. Clarity, joy, and success are yours. The days of darkness are over, and you bask in the warm light of truth and vitality."
+
+  },
+  {
+    "id": 21,
+    "name": "Judgment",
+    "link": "https://drive.google.com/file/d/16Lmrvf66MkPFwZDCz9Tl6-SkObCrSppi/view?usp=sharing",
+    "description": "Awaken, dear one. A new dawn breaks. Reflect on your past, for this is a time of rebirth. Release old burdens, for the call of transformation beckons you to a higher state."
+  },
+  {
+    "id": 22,
+    "name": "The World",
+    "link": "https://drive.google.com/file/d/143TGT-QG3pEHjqVVmYjSvfI1dJqW5oMA/view?usp=sharing",
+    "description": "The circle is complete. You stand at the threshold of fulfillment, having journeyed through the unknown. Now, rest in your achievements, for the next chapter awaits."
+
+  },
+  {
+    "id": 23,
+    "name": "Ace of Cups",
+    "link": "https://drive.google.com/file/d/173wfRcSVHZARxnlCGBiiChshYRVpbwNX/view?usp=sharing",
+    "description": "A new well of emotions overflows within you. A fresh wave of love, compassion, or creativity is yours to embrace. Open your heart and let the feelings flow freely."
+  },
+  {
+    "id": 24,
+    "name": "Two of Cups",
+    "link": "https://drive.google.com/file/d/178_bmg-W8GP3fS7JeZF91Gh44FvDdOV4/view?usp=sharing",
+    "description": "A bond is forming, one of mutual respect and affection. Love, partnership, and connection are on the horizon. This union brings harmony to both hearts involved."
+
+  },
+  {
+    "id": 25,
+    "name": "Three of Cups",
+    "link": "https://drive.google.com/file/d/14rLsvjzrLf0rlt615asyp63BTNhlFuyB/view?usp=sharing",
+    "description": "Celebrate, for the joy of companionship surrounds you. Gather with friends and loved ones, for these moments of togetherness bring healing and happiness."
+
+  },
+  {
+    "id": 26,
+    "name": "Four of Cups",
+    "link": "https://drive.google.com/file/d/15s5sS9qQgfocwfaDHS_okSFPeJeN-mlq/view?usp=sharing",
+    "description": "Your heart feels distant, as if disconnected from the world around you. Yet, a gift is being offered, if only you open your eyes. Seek clarity, and see what is being given."
+  },
+  {
+    "id": 27,
+    "name": "Five of Cups",
+    "link": "https://drive.google.com/file/d/1906P92y9eUz42venQJ0CSDzLJ4qTEEdr/view?usp=sharing",
+    "description": "Grief lingers, and loss seems heavy upon your heart. Yet, not all is lost—look closely, and you will see that there are still blessings to be found, waiting to be embraced."
+  },
+  {
+    "id": 28,
+    "name": "Six of Cups",
+    "link": "https://drive.google.com/file/d/18c7Xq8MeKzFRM3Jk-gjdXrBCFyjX7GTT/view?usp=sharing",
+    "description": "The past reaches out to you, offering memories of simpler times. Let nostalgia guide you back to innocence, for the lessons of the past are not yet forgotten."
+
+  },
+  {
+    "id": 29,
+    "name": "Seven of Cups",
+    "link": "https://drive.google.com/file/d/14rj7e4doTZvxJ_UxIqw88UKRYr960wo_/view?usp=sharing",
+    "description": "Choices, choices—many paths lie before you, each glimmering with promise. Yet,some paths are illusions. Trust your inner voice to guide you to the right one."
+
+  },
+  {
+    "id": 30,
+    "name": "Eight of Cups",
+    "link": "https://drive.google.com/file/d/187BSeQ-ANqJGMj8e1FlONT2xSlzQofIG/view?usp=sharing",
+    "description": "You leave behind what no longer serves you. A journey of the soul is beginning, one that seeks something deeper. Know that your quest is one of personal transformation."
+
+  },
+  {
+    "id": 31,
+    "name": "Nine of Cups",
+    "link": "https://drive.google.com/file/d/17f4yt-tfaZf25AXuEeY-DRPModABqhie/view?usp=sharing",
+    "description": "Satisfaction and contentment fill your heart. The desires you have long sought are now fulfilled. Rejoice in the peace that comes from within, for you have reached a place of harmony."
+  },
+  {
+    "id": 32,
+    "name": "Ten of Cups",
+    "link": "https://drive.google.com/file/d/17Qe9g-x5r0Cng0Fomv0sXLCDP5Kt32qH/view?usp=sharing",
+    "description": "Emotional fulfillment surrounds you—love, family, and peace. Your heart is full, and the world reflects your joy. This is the harmony you have long sought."
+
+  },
+  {
+    "id": 33,
+    "name": "Page of Cups",
+    "link": "https://drive.google.com/file/d/17p7cXImgjElSFSSBcTEHrJnrYOCx8sg0/view?usp=sharing",
+    "description": "New emotional messages are arriving. A creative spark or a message of love approaches. Open your heart, for this news will stir your soul and bring fresh inspiration."
+  },
+  {
+    "id": 34,
+    "name": "Knight of Cups",
+    "link": "https://drive.google.com/file/d/15z3FoOKCYffz-GMkNGBn9KWVIhJzuwI9/view?usp=sharing",
+    "description": "Follow your heart, for it leads you to new romantic or creative adventures. Your passion and idealism will guide you on a journey filled with beauty and connection."
+
+  },
+  {
+    "id": 35,
+    "name": "Queen of Cups",
+    "link": "https://drive.google.com/file/d/14ZchFr17Y6SK5_UH-NUsF9bqleuHcwfr/view?usp=sharing",
+    "description": "You are a beacon of compassion and intuition. Your heart is a wellspring of healing energy, offering solace to those around you. Trust your emotions—they are your wisdom."
+  },
+  {
+    "id": 36,
+    "name": "King of Cups",
+    "link": "https://drive.google.com/file/d/15z3FoOKCYffz-GMkNGBn9KWVIhJzuwI9/view?usp=sharing",
+    "description": "Emotional mastery is your gift. With balance and calm, you navigate the waters of life with grace. Your wisdom offers guidance, and your heart holds steady in turbulent times."
+
+  },
+  {
+    "id": 37,
+    "name": "Ace of Wands",
+    "link": "https://drive.google.com/file/d/17ilmF0JvyMWKhM9XAR0uqLa_bL0CsuMh/view?usp=sharing",
+    "description": "A new burst of energy ignites within you. This is the beginning of a creative or passionate journey. Embrace the spark—it is the fire that will propel you forward."
+
+  },
+  {
+    "id": 38,
+    "name": "Two of Wands",
+    "link": "https://drive.google.com/file/d/18ArJuWWSxd1TUENSoPo4CsTjGHvaSdRx/view?usp=sharing",
+    "description": "Your future calls, but you must make a choice. The world is open to you, yet you must decide which path to take. Now is the time to plan your next great adventure."
+  },
+  {
+    "id": 39,
+    "name": "Three of Wands",
+    "link": "https://drive.google.com/file/d/17yLQzd8wM4bkNKmoQKRJ9MqST3fkB7JP/view?usp=sharing",
+    "description": "Your efforts have borne fruit, and now you wait to see what will come. Expansion and growth are at hand—what you have set in motion is about to reach new heights."
+  },
+  {
+    "id": 40,
+    "name": "Four of Wands",
+    "link": "https://drive.google.com/file/d/196wnr5Mr2WZNDMItBGPirb62_sigISO3/view?usp=sharing",
+    "description": "Celebrate the stability you have built. This is a time of joy and harmony, a momentto rest and enjoy the fruits of your labor. Union, completion, and peace fill the air."
+
+  },
+  {
+    "id": 41,
+    "name": "Five of Wands",
+    "link": "https://drive.google.com/file/d/14uWPEE77Pn7SWdk3dQRvxJd39ZT10n-e/view?usp=sharing",
+    "description": "Conflict arises, but it is through challenge that you will grow. Competition and competition can be healthy, but strive to rise above the chaos and seek unity."
+
+  },
+  {
+    "id": 43,
+    "name": "Seven of Wands",
+    "link": "https://drive.google.com/file/d/16ICw1p6cQLo1MTMqXLwK5rlFivsUEkR7/view?usp=sharing",
+    "description": "Defend what you have built. Challenges may come, but with determination, you will rise above. Stand your ground, for your position is strong."
+
+  },
+  {
+    "id": 44,
+    "name": "Eight of Wands",
+    "link": "https://drive.google.com/file/d/18RmiMrw70hbGEFKvJQIsarhzGmRl5PmQ/view?usp=sharing",
+    "description": "Swift movement is upon you. Things are changing rapidly, and progress is being made. Embrace the momentum, for it brings opportunities that require quick action."
+
+  },
+  {
+    "id": 45,
+    "name": "Nine of Wands",
+    "link": "https://drive.google.com/file/d/17tZyt0v4D5x6iwEUJ1EDj741k1l-qrDW/view?usp=sharing",
+    "description": "You are weary, but your strength remains. Stand firm, for you are on the verge of completing your journey. Rest, if you must, but do not give up now."
+  },
+  {
+    "id": 46,
+    "name": "Ten of Wands",
+    "link": "https://drive.google.com/file/d/176MoyMMz9XQEqVn9Ah1uD3dbEoNnfAqS/view?usp=sharing",
+    "description": "The burden is heavy, and you feel the weight of your responsibilities. It is time torelease what no longer serves you. Share the load, or lay down the burdens of the past."
+  },
+  {
+    "id": 47,
+    "name": "Page of Wands",
+    "link": "https://drive.google.com/file/d/14bvT4mCTVVXcwIQciXaDAwtxIKBiwZnm/view?usp=sharing",
+    "description": "A new adventure beckons, full of passion and excitement. The winds of change are calling—be bold, for this is the beginning of something extraordinary."
+
+  },
+  {
+    "id": 48,
+    "name": "Knight of Wands",
+    "link": "https://drive.google.com/file/d/15RtSnbOFzWuZeHxnN_KUJYg7mzNbR64H/view?usp=sharing",
+    "description": "Passion drives you forward, and your energy is boundless. You race toward your goals with enthusiasm. Yet, remember, control the fire—do not let it consume you."
+
+  },
+  {
+    "id": 49,
+    "name": "Queen of Wands",
+    "link": "https://drive.google.com/file/d/14P0cUZKhMgjcarho99Y3XH1Tdh-AAvRg/view?usp=sharing",
+    "description": "Confidence and creativity flow from you. You inspire and lead with strength and grace. Your vision is clear, and your heart is open to the possibilities around you."
+
+  },
+  {
+    "id": 50,
+    "name": "King of Wands",
+    "link": "https://drive.google.com/file/d/15RtSnbOFzWuZeHxnN_KUJYg7mzNbR64H/view?usp=sharing",
+    "description": "You are a natural leader, full of vision and inspiration. Your actions speak louder than words. The fire of your will propels you forward, and others follow your lead."
+
+  },
+  {
+    "id": 51,
+    "name": "Ace of Swords",
+    "link": "https://drive.google.com/file/d/178n_oORROyhxPD8-NSzfxsHaS9U7Ie4u/view?usp=sharing",
+    "description": "Clarity pierces through the fog, and truth reveals itself. A new idea, a new way of thinking is born within you. Let the sword of your intellect cut through confusion, forit will lead you to victory."
+  },
+  {
+    "id": 52,
+    "name": "Two of Swords",
+    "link": "https://drive.google.com/file/d/17YRp2C-11TA8O_lzBB2krOrHLp7y3cn9/view?usp=sharing",
+    "description":"A choice stands before you, one that requires balance. The heart and the mind pull in different directions. Close your eyes, and listen to the quiet within—therein lies your answer."
+  },
+  {
+    "id": 53,
+    "name": "Three of Swords",
+    "link": "https://drive.google.com/file/d/18yT-U40YnKNCidbCP9-a4z4BIuwxTv9f/view?usp=sharing",
+    "description": "Pain, sorrow, and heartache pierce deeply into your soul. Yet, remember—this too shall pass. Grief is the gateway to healing. Allow the tears to cleanse, for in time, you will emerge stronger."
+  },
+  {
+    "id": 54,
+    "name": "Four of Swords",
+    "link": "https://drive.google.com/file/d/16HI2qANA2IvCBokcf6e4qu2SldTPm_II/view?usp=sharing",
+    "description": "Rest, for your soul is weary. The time has come to pause and heal. In stillness, your energy will be restored. Take solace in the quiet and prepare, for soon, you will rise again."
+  },
+  {
+    "id": 55,
+    "name": "Five of Swords",
+    "link": "https://drive.google.com/file/d/16HI2qANA2IvCBokcf6e4qu2SldTPm_II/view?usp=sharing",
+    "description": "Conflict surrounds you, and victory may come at a cost. Beware the temptations of winning at all costs. Honor the integrity of your actions, and know that true victory comes not through conquest, but through peace."
+
+  },
+  {
+    "id": 56,
+    "name": "Six of Swords",
+    "link": "https://drive.google.com/file/d/18XNEzY3XnL31f1t0woxEfYtLv9lENz7b/view?usp=sharing",
+    "description": "Leave behind the stormy seas and sail toward calmer waters. Transition is at hand. Though the journey may be difficult, know that it leads you to a place of healing and tranquility."
+  },
+  {
+    "id": 59,
+    "name": "Nine of Swords",
+    "link": "https://drive.google.com/file/d/14GTeONvpt5B8q3cFKo6tnpAgF8s-KSwn/view?usp=sharing",
+    "description": "Night brings its shadows, and your fears grow in the dark. But remember, the darkness is but a temporary illusion. What haunts you in the night will fade with the light of dawn. Trust, and the weight will lift."
+  },
+  {
+    "id": 60,
+    "name": "Ten of Swords",
+    "link": "https://drive.google.com/file/d/13zhqcV6q5iRezKi-BkHMEl3SqcNvA5rd/view?usp=sharing",
+    "description": "Endings can be painful, but they are also liberating. The cycle is complete, and with it, all that no longer serves you falls away. Let the old wounds heal, for new beginnings rise from this ending."
+  },
+  {
+    "id": 61,
+    "name": "Page of Swords",
+    "link": "https://drive.google.com/file/d/14E0l9OJmFi5uiXsNp_vncz4tXdX84Uq8/view?usp=sharing",
+    "description": "A new idea stirs within you, a spark of curiosity that demands attention. You are keen to learn and observe. Be watchful, for knowledge and insight are arriving with swift winds."
+  },
+  {
+    "id": 62,
+    "name": "Knight of Swords",
+    "link": "https://drive.google.com/file/d/18xO07n7R8IYL2p0y82lP2DYjp76t70W5/view?usp=sharing",
+    "description": "Swift and determined, you charge forward. Your mind is sharp, and your mission is clear. But remember, caution is your ally. The winds of change are strong, and your actions must be guided by wisdom."
+  },
+  {
+    "id": 63,
+    "name": "Queen of Swords",
+    "link": "https://drive.google.com/file/d/18phoHHWbiJrfdLercQjcnlyYtPh1j2Fy/view?usp=sharing",
+    "description": "Clarity of mind and sharpness of wit are your gifts. You see the world as it is, noillusions clouding your vision. Trust in your intellect, for it will guide you through thefog and lead you to the truth."
+  },
+  {
+    "id": 64,
+    "name": "King of Swords",
+    "link": "https://drive.google.com/file/d/18xO07n7R8IYL2p0y82lP2DYjp76t70W5/view?usp=sharing",
+    "description": "Master of thought and reason, you wield your intellect like a blade. Decisions are made with precision, and justice is your guide. Stand tall in your wisdom, for your mind is a powerful ally."
+
+  },
+  {
+    "id": 65,
+    "name": "Ace of Pentacles",
+    "link": "https://drive.google.com/file/d/173wfRcSVHZARxnlCGBiiChshYRVpbwNX/view?usp=sharing",
+    "description": "A new beginning, one of tangible growth. A seed is being planted in the material world, and with patience, it will bear fruit. Opportunities for prosperity are within your reach—nurture them well."
+
+  },
+  {
+    "id": 66,
+    "name": "Two of Pentacles",
+    "link": "https://drive.google.com/file/d/15kirfHMWngP4kBtPxh4c8v8sxqpRKwPs/view?usp=sharing",
+    "description": "Balance is the key. The demands of the material world are many, and you must juggle them carefully. Find harmony between work, life, and self, for too much of one will tip the scales."
+  },
+  {
+    "id": 67,
+    "name": "Three of Pentacles",
+    "link": "https://drive.google.com/file/d/17SiFAzJa3DxDEECYnbI05VyqxxHQV4qN/view?usp=sharing",
+    "description": "Collaboration brings success. Your skill, combined with the efforts of others, creates something greater than the sum of its parts. This is a time of teamwork, where craftsmanship and cooperation lead to mastery."
+  },
+  {
+    "id": 68,
+    "name": "Four of Pentacles",
+    "link": "https://drive.google.com/file/d/170iIzFnX2v5qy_LTITRrcqVt4kuTpMxs/view?usp=sharing",
+    "description": "You hold tight to what you have, guarding your resources closely. Yet, beware, for excessive attachment can lead to stagnation. It is not the things you hold that define you, but the freedom you allow to flow."
+
+  },
+  {
+    "id": 69,
+    "name": "Five of Pentacles",
+    "link": "https://drive.google.com/file/d/191J9dgB59wnuGNReqF4KJ-6GXAG2-5yn/view?usp=sharing",
+    "description": "A time of hardship and lack. Yet, do not despair, for even in the darkest moments, help is near. Seek the light, for it shines even in the midst of struggle. Remember, you are never truly alone."
+  },
+  {
+    "id": 70,
+    "name": "Six of Pentacles",
+    "link": "https://drive.google.com/file/d/18_YR_2E_PJLlIyTvQAlNVuIFQZeXTLTU/view?usp=sharing",
+    "description": "Generosity flows both ways. Whether giving or receiving, know that balance is key.There is harmony in sharing, and the cycle of giving will return to you tenfold. Be kind, and the universe will bless you."
+
+  },
+  {
+    "id": 71,
+    "name": "Seven of Pentacles",
+    "link": "https://drive.google.com/file/d/17ppnql2y6EiAYLrX0ijLuLuWzGVtccnl/view?usp=sharing",
+    "description": "Patience is called for, as you watch the fruits of your labor slowly ripen. Do not rush the process. Growth takes time, and your efforts will soon bear the reward you seek."
+  },
+  {
+    "id": 72,
+    "name": "Eight of Pentacles",
+    "link": "https://drive.google.com/file/d/14Xan6Yr4VNuyFo3-joofx3Bnd-GeG5uk/view?usp=sharing",
+    "description": "Dedication and focus are your allies. Work diligently, honing your craft. Each small step brings you closer to mastery. The journey may be long, but the rewards are worth the effort."
+  },
+  {
+    "id": 73,
+    "name": "Nine of Pentacles",
+    "link": "https://drive.google.com/file/d/183zysk1vRU8qQHgfPiQAveftjgR0jlL6/view?usp=sharing",
+    "description": "Abundance and self-sufficiency are yours. You have built your own success through patience and hard work. Revel in the fruits of your labor, and know that the comfort you seek is within your grasp."
+
+  },
+  {
+    "id": 74,
+    "name": "Ten of Pentacles",
+    "link": "https://drive.google.com/file/d/15xb4RvOOV5cB8GjlewFIKiofSS3NY2QA/view?usp=sharing",
+    "description": "Legacy, family, and lasting wealth—this is the culmination of all you have built. The material and emotional stability you seek is here, anchored in the love and security of home and kin."
+  },
+  {
+    "id": 75,
+    "name": "Page of Pentacles",
+    "link": "https://drive.google.com/file/d/15kYyHMdz5FHFhIT3pX4SfT392CgTr2Uk/view?usp=sharing",
+    "description": "A new opportunity for growth is on the horizon, one rooted in the material world.Your ambition is young and full of promise. Approach this new venture with curiosity and determination, for it will bring success."
+
+  }
+  ,
+  {
+    "id": 76,
+    "name": "Knight of Pentacles",
+    "link": "https://drive.google.com/file/d/17BlUjbTQbE03S80Qnh5hhJIIRSKWMwR5/view?usp=sharing",
+    "description": "Slow and steady, you move toward your goal. Patience and persistence are your strengths. The journey may be long, but your commitment ensures that you will reach your destination with stability and reward."
+
+  }
+  ,
+  {
+    "id": 77,
+    "name": "Queen of Pentacles",
+    "link": "https://drive.google.com/file/d/15uPqTx53hplcYIiAgrxqK3oVnQ6APtQC/view?usp=sharing",
+    "description": "Nurturing and practical, you are the embodiment of abundance. You care deeply for those around you and provide a stable foundation for all. Your wisdom lies in balancing the material world with your compassionate heart."
+  }
+  ,
+  {
+    "id": 78,
+    "name": "King of Pentacles",
+    "link": "https://drive.google.com/file/d/15aF_ikKC0yPVpIami4n2IKNAiNcWhVmJ/view?usp=sharing",
+    "description": "Master of wealth and stability, you rule with a steady hand. Your material success is built on a foundation of hard work and responsibility. You possess the strength to lead with both generosity and discipline."
+  }
+]
